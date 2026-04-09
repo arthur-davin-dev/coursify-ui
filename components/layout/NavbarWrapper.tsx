@@ -4,23 +4,21 @@ import { useState, useEffect } from "react";
 import NavbarNoAcc from "./NavbarNoAcc";
 import Navbar from "./Navbar";
 
-
 export default function NavbarWrapper() {
-  // In a real app, replace this with your Auth Hook 
-  // e.g., const { data: session } = useSession();
   const [hasAccount, setHasAccount] = useState(false);
 
-  // For testing purposes: check if a token exists in localStorage
-  useEffect(() => {
+  const checkAuth = () => {
     const user = localStorage.getItem("user_token");
-    if (user) setHasAccount(true);
+    setHasAccount(!!user);
+  };
+
+  useEffect(() => {
+    checkAuth();
+    window.addEventListener("auth-change", checkAuth);
+    return () => window.removeEventListener("auth-change", checkAuth);
   }, []);
 
-  return (
-    <>
-      {hasAccount ? <NavbarNoAcc /> : <Navbar />}
-    </>
-  );
+  return <>{hasAccount ? <Navbar /> : <NavbarNoAcc />}</>;
 }
 
 // "use client";

@@ -6,15 +6,15 @@ import { useState, useEffect } from "react";
 import { Menu, X, Sun, Moon, LogIn } from "lucide-react";
 
 const navLinks = [
-  { label: "Course", href: "/course" },
-  { label: "Library", href: "/library" },
-  { label: "About us", href: "/about" },
+  { label: "Course", href: "/courses" },
+  { label: "Library", href: "/books" },
+  { label: "About us", href: "/about-us" },
 ];
 
 export default function NavbarNoAcc() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [scrolled, setScrolled] = useState(false); // ✅ NEW
+  const [scrolled, setScrolled] = useState(false);
 
   // Load theme
   useEffect(() => {
@@ -52,20 +52,21 @@ export default function NavbarNoAcc() {
   return (
     <nav
       className={`w-full sticky top-0 z-50 transition-all duration-300
-    ${
-      scrolled
-        ? "bg-white/70 dark:bg-gray-900/70 backdrop-blur-md shadow-md py-1" // smaller height
-        : "bg-white dark:bg-gray-900 py-4" // default taller height
-    }`}
+        ${
+          scrolled
+            ? "bg-white/70 dark:bg-gray-900/70 backdrop-blur-md shadow-md"
+            : "bg-white dark:bg-gray-900"
+        }`}
     >
       {/* Main bar */}
-      <div className="flex items-center justify-between px-4 sm:px-8 md:px-10 lg:px-20 py-2">
+      <div className="flex items-center justify-between px-4 sm:px-8 md:px-10 lg:px-20 py-0">
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
-            src={darkMode ? "/coursifydark.png" : "/lightcoursify.png"}
+            // src={darkMode ? "/coursifydark.png" : "/lightcoursify.png"}
+            src={darkMode ? "/logocoursifydark.jpg.png" : "/logocoursifydark.jpg.png"}
             alt="Coursify Logo"
-            width={130}
+            width={200}
             height={52}
             className="object-contain w-[90px] sm:w-[110px] md:w-[130px]"
             priority

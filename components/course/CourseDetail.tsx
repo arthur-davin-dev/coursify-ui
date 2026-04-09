@@ -1,43 +1,75 @@
-'use client';
+"use client";
 
-import { Video, ThumbsUp, ThumbsDown, User, Play } from 'lucide-react';
+import { useState } from "react";
+import { Video, ThumbsUp, ThumbsDown, User, Play, Tag, DollarSign } from "lucide-react";
+import type { Course, Lesson } from "@/store/services/courseApi";
 
-export default function CourseDetail() {
+export default function CourseDetail({ course }: { course: Course }) {
+  const [comment, setComment] = useState("");
+
+  const thumbnailSrc =
+    course.thumbnail && course.thumbnail !== ""
+      ? course.thumbnail
+      : "https://images.unsplash.com/photo-1555099962-4199c345e5dd?w=900&q=80";
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 font-sans">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        
-        {/* --- LEFT COLUMN: Course Info & Feedback --- */}
+
+        {/* LEFT COLUMN */}
         <div className="lg:col-span-2 space-y-12">
-          
+
           {/* Course Header */}
           <section className="space-y-6">
-            <h1 className="text-4xl lg:text-5xl font-bold text-[#2D368E] font-heading leading-tight">
-              React - The Complete Guide
+            <h1 className="text-4xl lg:text-5xl font-bold text-[#2D368E] dark:text-blue-400 leading-tight">
+              {course.title}
             </h1>
-            
+
+            {/* Teacher */}
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden border border-gray-200">
                 <User className="text-gray-400" size={20} />
               </div>
-              <span className="font-semibold text-slate-700 font-sans">Dr. Fantastic</span>
+              <span className="font-semibold text-slate-700 dark:text-gray-200">
+                {course.teacherName ?? "Instructor"}
+              </span>
             </div>
 
-            <div className="flex gap-2">
-              <span className="px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-full text-xs font-bold font-sans">Beginner</span>
-              <span className="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-xs font-bold font-sans">Technology</span>
-              <span className="px-4 py-1.5 bg-red-50 text-red-600 rounded-full text-xs font-bold font-sans">Programming</span>
+            {/* Tags / Category */}
+            <div className="flex flex-wrap gap-2">
+              {course.categoryName && (
+                <span className="px-4 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded-full text-xs font-bold">
+                  {course.categoryName}
+                </span>
+              )}
+              {course.tags?.map((tag) => (
+                <span
+                  key={tag}
+                  className="flex items-center gap-1 px-4 py-1.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-300 rounded-full text-xs font-bold"
+                >
+                  <Tag size={10} />
+                  {tag}
+                </span>
+              ))}
             </div>
 
-            <button className=" bg-blue-600 text-white px-10 py-3.5 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 font-sans">
-              Enroll now
-            </button>
+            {/* Price + Enroll */}
+            <div className="flex items-center gap-4">
+              <span className="text-3xl font-extrabold text-emerald-500">
+                {course.price === 0 ? "Free" : `$${course.price}`}
+              </span>
+              <button className="bg-blue-600 text-white px-10 py-3.5 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100">
+                Enroll now
+              </button>
+            </div>
           </section>
 
-          {/* About This Course */}
+          {/* About */}
           <section className="space-y-4">
             <div className="flex items-center gap-4">
-              <h2 className="text-2xl font-bold text-slate-800 font-heading">About this course</h2>
+              <h2 className="text-2xl font-bold text-slate-800 dark:text-white">
+                About this course
+              </h2>
               <div className="flex gap-2">
                 <span className="flex items-center gap-1 bg-emerald-500 text-white px-2.5 py-1 rounded-md text-xs font-bold">
                   <ThumbsUp size={14} fill="currentColor" /> 80%
@@ -47,51 +79,48 @@ export default function CourseDetail() {
                 </span>
               </div>
             </div>
-            <p className="text-gray-600 leading-relaxed max-w-2xl font-sans text-lg">
-              Dive in and learn React.js from scratch! Learn React, Hooks, Redux, React Router, Next.js, Best Practices and way more!
+            <p className="text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl text-lg">
+              {course.description}
             </p>
           </section>
 
-          {/* Feedback / Comments Section */}
+          {/* Feedback */}
           <section className="space-y-6">
-            <h2 className="text-2xl font-bold text-slate-800 font-heading">Student's feedback</h2>
-            
-            <div className="border border-gray-100 rounded-[2rem] p-8 space-y-10 shadow-sm">
-              {/* Post Comment Input */}
+            <h2 className="text-2xl font-bold text-slate-800 dark:text-white">
+              Student's feedback
+            </h2>
+
+            <div className="border border-gray-100 dark:border-gray-700 rounded-[2rem] p-8 space-y-10 shadow-sm">
+              {/* Comment input */}
               <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-full border-2 border-orange-400 p-0.5 shrink-0">
-                   <div className="relative w-full h-full rounded-full overflow-hidden">
-                      <img 
-                        src="https://encrypted-tbn0.gstatic.com/imgs?q=tbn:ANd9GcR6SGvshARHJ5GYSH_Kig8-cYNw5rO3nWn7mA&s" 
-                        alt="User" 
-                         
-                        className="object-cover"
-                      />
-                   </div>
+                <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold shrink-0">
+                  U
                 </div>
                 <div className="relative w-full">
-                  <input 
-                    type="text" 
-                    placeholder="Add a comment" 
-                    className="w-full bg-gray-50 rounded-full py-4 px-6 outline-none focus:ring-2 ring-blue-100 font-sans"
+                  <input
+                    type="text"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Add a comment"
+                    className="w-full bg-gray-50 dark:bg-gray-800 dark:text-white rounded-full py-4 px-6 outline-none focus:ring-2 ring-blue-100"
                   />
-                  <button className="absolute right-2 top-2 bg-[#2D368E] text-white px-8 py-2 rounded-full font-bold font-sans hover:bg-blue-900 transition">
+                  <button className="absolute right-2 top-2 bg-[#2D368E] text-white px-8 py-2 rounded-full font-bold hover:bg-blue-900 transition">
                     Post
                   </button>
                 </div>
               </div>
 
-              {/* Nested Comments */}
+              {/* Static comments */}
               <div className="space-y-6">
-                <CommentItem 
-                  name="Ralph Edwards" 
-                  date="Aug 19, 2021" 
+                <CommentItem
+                  name="Ralph Edwards"
+                  date="Aug 19, 2021"
                   text="In mauris porttitor tincidunt mauris massa sit lorem sed scelerisque. Fringilla pharetra vel massa enim sollicitudin cras."
                 />
                 <div className="pl-14">
-                  <CommentItem 
-                    name="Ralph Edwards" 
-                    date="Aug 19, 2021" 
+                  <CommentItem
+                    name="Ralph Edwards"
+                    date="Aug 19, 2021"
                     text="In mauris porttitor tincidunt mauris massa sit lorem sed scelerisque."
                   />
                 </div>
@@ -100,37 +129,41 @@ export default function CourseDetail() {
           </section>
         </div>
 
-        {/* --- RIGHT COLUMN: Sidebar (Centered Play Button) --- */}
+        {/* RIGHT COLUMN */}
         <aside className="space-y-8">
+          {/* Thumbnail / Preview */}
           <div className="relative aspect-video rounded-[2rem] overflow-hidden shadow-2xl group cursor-pointer">
-            <img 
-              src="https://img.freepik.com/free-photo/programming-background-collage_23-2149901776.jpg" 
-              alt="Course Preview" 
-            
-              className="object-cover group-hover:scale-105 transition-transform duration-700"
+            <img
+              src={thumbnailSrc}
+              alt={course.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
-            {/* Centered Button Overlay */}
-            <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center gap-4">
-               <h3 className="text-white font-heading font-bold text-xl text-center px-6 leading-tight">
-                {/* FRONT END DEVELOPMENT <br />  */}
-                
-               </h3>
-               {/* Centered Play Button */}
-               <div className="w-16 h-16 bg-white/20 backdrop-blur-md border border-white/30 rounded-full flex items-center justify-center text-white hover:bg-white/40 transition-all">
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-md border border-white/30 rounded-full flex items-center justify-center text-white hover:bg-white/40 transition-all">
                 <Play size={28} fill="white" className="ml-1" />
               </div>
             </div>
           </div>
 
-          {/* Lessons List */}
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-[#2D368E] font-heading">All Lessons</h2>
-            <div className="space-y-3">
-              <LessonItem number={1} title="Introduce To React Js" duration="30 mn" hasQuiz />
-              <LessonItem number={2} title="Lesson 2" duration="15 mn" />
-              <LessonItem number={3} title="Lesson 3" duration="55 mn" />
-              <LessonItem number={4} title="React Hook" duration="1 h" hasQuiz />
-            </div>
+          {/* Lessons */}
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold text-[#2D368E] dark:text-blue-400">
+              All Lessons
+            </h2>
+
+            {course.lessons && course.lessons.length > 0 ? (
+              <div className="space-y-3">
+                {course.lessons.map((lesson, index) => (
+                  <LessonItem
+                    key={lesson.id}
+                    number={index + 1}
+                    lesson={lesson}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-400 text-sm">No lessons available yet.</p>
+            )}
           </div>
         </aside>
 
@@ -141,38 +174,51 @@ export default function CourseDetail() {
 
 // --- Internal Components ---
 
-function LessonItem({ number, title, duration, hasQuiz = false }: any) {
+function LessonItem({ number, lesson }: { number: number; lesson: Lesson }) {
   return (
-    <div className="bg-gray-50/50 p-5 rounded-2xl hover:bg-blue-50 transition-all cursor-pointer group border border-transparent hover:border-blue-100">
-      <div className="flex justify-between items-start font-sans">
+    <div className="bg-gray-50/50 dark:bg-gray-800 p-5 rounded-2xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all cursor-pointer group border border-transparent hover:border-blue-100 dark:hover:border-blue-800">
+      <div className="flex justify-between items-start">
         <div className="flex gap-4">
-          <span className="font-bold text-[#2D368E]">{number}.</span>
+          <span className="font-bold text-[#2D368E] dark:text-blue-400">
+            {number}.
+          </span>
           <div>
-            <h4 className="font-bold text-slate-800 group-hover:text-blue-700 transition-colors underline decoration-blue-200 underline-offset-4">{title}</h4>
-            {hasQuiz && <p className="text-xs text-blue-500 font-bold mt-1 underline underline-offset-4">Quizzes For Lesson {number}</p>}
+            <h4 className="font-bold text-slate-800 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors underline decoration-blue-200 underline-offset-4">
+              {lesson.title}
+            </h4>
+            {lesson.description && (
+              <p className="text-xs text-gray-400 mt-0.5">{lesson.description}</p>
+            )}
           </div>
         </div>
-        <div className="flex items-center gap-2 text-gray-400 font-medium text-sm">
-          <Video size={16} className="text-blue-400" />
-          <span>{duration}</span>
-        </div>
+        <a
+          href={lesson.video_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="flex items-center gap-1 text-blue-400 hover:text-blue-600 transition shrink-0 ml-2"
+        >
+          <Video size={16} />
+        </a>
       </div>
     </div>
   );
 }
 
-function CommentItem({ name, date, text }: any) {
+function CommentItem({ name, date, text }: { name: string; date: string; text: string }) {
   return (
     <div className="flex gap-4 group font-sans">
-      <div className="w-11 h-11 rounded-full relative overflow-hidden border border-gray-200 shrink-0">
-        <img src="https://encrypted-tbn0.gstatic.com/imgs?q=tbn:ANd9GcR6SGvshARHJ5GYSH_Kig8-cYNw5rO3nWn7mA&s"alt='logo' className="object-cover" />
+      <div className="w-11 h-11 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold shrink-0 text-sm">
+        {name[0]}
       </div>
-      <div className="bg-blue-50/40 p-5 rounded-[1.5rem] flex-1">
+      <div className="bg-blue-50/40 dark:bg-blue-900/20 p-5 rounded-[1.5rem] flex-1">
         <div className="flex justify-between items-center mb-2">
-          <h4 className="font-bold text-slate-800">{name}</h4>
-          <span className="text-xs text-gray-400 font-medium">{date}</span>
+          <h4 className="font-bold text-slate-800 dark:text-white">{name}</h4>
+          <span className="text-xs text-gray-400">{date}</span>
         </div>
-        <p className="text-sm text-gray-600 leading-relaxed">{text}</p>
+        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+          {text}
+        </p>
       </div>
     </div>
   );

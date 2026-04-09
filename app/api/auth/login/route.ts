@@ -1,79 +1,37 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { LoginSchema } from '@/schemas/auth';
+import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
-const BACKEND_URL = process.env.BACKEND_API_URL;
-
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const body = await request.json();
+    const loginData = await req.json();
 
-    // Validate input with Zod
-    const validatedData = LoginSchema.parse(body);
-
-    // Forward to backend
-    const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
-      method: 'POST',
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/auth/login`, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(validatedData),
+      body: JSON.stringify(loginData),
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      return NextResponse.json(
-        { error: error.message || 'Login failed' },
-        { status: response.status }
-      );
+    if (!res.ok) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const data = await response.json();
+    const data = await res.json();
 
-    // Create response with tokens set as HTTP-only cookies
-    const result = NextResponse.json(
-      {
-        user: data.user,
-        message: 'Login successful',
-      },
-      { status: 200 }
-    );
+    // Set secure HTTP-only cookie for server-side auth
+    const cookieStore = await cookies();
+    cookieStore.set("better-auth.session_data", data.access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 1,
+    });
 
-    // Set access token cookie
-    if (data.accessToken) {
-      result.cookies.set('accessToken', data.accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 15 * 60, // 15 minutes
-        path: '/',
-      });
-    }
-
-    // Set refresh token cookie
-    if (data.refreshToken) {
-      result.cookies.set('refreshToken', data.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 7 * 24 * 60 * 60, // 7 days
-        path: '/',
-      });
-    }
-
-    return result;
+    return NextResponse.json(data);
   } catch (error) {
-    console.error('[v0] Login error:', error);
-
-    if (error instanceof Error && error.message.includes('validation')) {
-      return NextResponse.json(
-        { error: 'Invalid input' },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    console.log("err login", error);
+    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }

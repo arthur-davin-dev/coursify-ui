@@ -1,30 +1,29 @@
+// app/api/users/me/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  try {
-    const token = req.headers.get("Authorization");
-    if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
+  const authHeader = req.headers.get("Authorization");
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/users/me`, {
+  // ✅ Guard: no token = return 401 immediately
+  if (!authHeader) {
+    return NextResponse.json({ message: "No token provided" }, { status: 401 });
+  }
+
+  try {
+    const response = await fetch(`${process.env.API_BASE_URL}/api/users/me`, {
+      method: "GET",
       headers: {
-        Authorization: token,
+        "Content-Type": "application/json",
+        Authorization: authHeader, // ✅ Forward the Bearer token to Java
       },
     });
 
-    const text = await res.text();
-    if (!text) return NextResponse.json({}, { status: res.status });
+    const text = await response.text();
+    const data = text ? JSON.parse(text) : {};
 
-    const data = JSON.parse(text);
-
-    if (!res.ok) {
-      return NextResponse.json(data, { status: res.status });
-    }
-
-    return NextResponse.json(data);
-  } catch (error) {
-    console.error("User me error:", error);
-    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(data, { status: response.status });
+  } catch (err) {
+    console.error("Proxy /api/users/me error:", err);
+    return NextResponse.json({ message: "Internal proxy error" }, { status: 500 });
   }
 }

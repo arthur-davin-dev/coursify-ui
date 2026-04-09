@@ -3,160 +3,207 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Menu, X, Sun, Moon, LogIn } from "lucide-react";
-
-const navLinks = [
-  { label: "Course", href: "/courses" },
-  { label: "Library", href: "/books" },
-  { label: "About us", href: "/about-us" },
-];
+import { Menu, X, Sun, Moon, LogIn, Globe, Check, ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n"; 
+import { LoginForm } from "../forms/LoginForm";
 
 export default function NavbarNoAcc() {
+  const { t } = useTranslation();
+  const [mounted, setMounted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
 
-  // Load theme
+  // Fix hydration and load theme
   useEffect(() => {
+    setMounted(true);
     const saved = localStorage.getItem("theme");
     if (saved === "dark") {
       setDarkMode(true);
       document.documentElement.classList.add("dark");
     }
-  }, []);
 
-  // Scroll detection
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    // Global click listener to close dropdowns
+    const closeDropdowns = () => setLangOpen(false);
+    window.addEventListener("click", closeDropdowns);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("click", closeDropdowns);
+    };
   }, []);
 
-  // Toggle dark mode
-  const toggleDarkMode = () => {
+  if (!mounted) return <div className="h-20" />;
+
+  const toggleDarkMode = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const next = !darkMode;
     setDarkMode(next);
-
-    if (next) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
+    next
+      ? document.documentElement.classList.add("dark")
+      : document.documentElement.classList.remove("dark");
+    localStorage.setItem("theme", next ? "dark" : "light");
   };
 
+  const handleLanguageChange = (lng: string) => {
+    i18n.changeLanguage(lng);
+    setLangOpen(false);
+  };
+
+  const currentLang = i18n.language || "en";
+
+  const navLinks = [
+    { label: t("Course"), href: "/courses" },
+    { label: t("Library"), href: "/library" },
+    { label: t("About us"), href: "/about-us" },
+  ];
+
   return (
-    <nav
-      className={`w-full sticky top-0 z-50 transition-all duration-300
+    <>
+      <nav
+        className={`w-full sticky top-0 z-40 transition-all duration-300
         ${
           scrolled
             ? "bg-white/70 dark:bg-gray-900/70 backdrop-blur-md shadow-md"
-            : "bg-white dark:bg-gray-900"
+            : "bg-white dark:bg-[#0F1226]"
         }`}
-    >
-      {/* Main bar */}
-      <div className="flex items-center justify-between px-4 sm:px-8 md:px-10 lg:px-20 py-0">
-        {/* Logo */}
-        <Link href="/" className="flex items-center">
-          <Image
-            // src={darkMode ? "/coursifydark.png" : "/lightcoursify.png"}
-            src={darkMode ? "/logocoursifydark.jpg.png" : "/logocoursifydark.jpg.png"}
-            alt="Coursify Logo"
-            width={200}
-            height={52}
-            className="object-contain w-[90px] sm:w-[110px] md:w-[130px]"
-            priority
-          />
-        </Link>
+      >
+        <div className="flex items-center justify-between px-4 sm:px-8 md:px-10 lg:px-20 py-2">
+          {/* Logo */}
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/logocoursifydark.jpg.png"
+              alt="Logo"
+              width={200}
+              height={52}
+              className="object-contain w-[50px] sm:w-[70px] md:w-[85px]"
+              priority
+            />
+          </Link>
 
-        {/* Desktop Nav */}
-        <ul className="hidden md:flex items-center gap-6 lg:gap-10">
-          {navLinks.map((item) => (
-            <li key={item.label}>
-              <Link
-                href={item.href}
-                className="text-gray-700 dark:text-gray-200 font-medium 
-                           hover:text-blue-700 dark:hover:text-blue-400 
-                           transition text-base lg:text-xl"
+          {/* Desktop Nav */}
+          <ul className="hidden md:flex items-center gap-6 lg:gap-10">
+            {navLinks.map((item) => (
+              <li key={item.label}>
+                <Link
+                  href={item.href}
+                  className="text-gray-700 dark:text-gray-200 font-bold hover:text-blue-700 dark:hover:text-blue-400 transition text-base lg:text-lg uppercase"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          {/* Right Section */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            
+            {/* ✅ LANGUAGE SELECTOR */}
+            <div className="relative">
+              <button
+                onClick={(e) => { e.stopPropagation(); setLangOpen(!langOpen); }}
+                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
               >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+                <Globe size={18} className="text-blue-600" />
+                <span className="text-xs font-black uppercase">{currentLang.slice(0, 2)}</span>
+                <ChevronDown size={14} className={`transition-transform ${langOpen ? 'rotate-180' : ''}`} />
+              </button>
 
-        {/* Right Side */}
-        <div className="flex items-center gap-3 sm:gap-5">
-          {/* Dark Mode */}
-          <button
-            onClick={toggleDarkMode}
-            className="p-2 rounded-lg text-gray-700 dark:text-yellow-300 
-                       hover:bg-gray-100 dark:hover:bg-gray-800 transition"
-          >
-            {darkMode ? <Sun size={26} /> : <Moon size={26} />}
-          </button>
+              {langOpen && (
+                <div className="absolute right-0 mt-3 w-40 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                  <button 
+                    onClick={() => handleLanguageChange('en')}
+                    className="flex items-center justify-between w-full px-4 py-3 text-sm hover:bg-blue-50 dark:hover:bg-gray-700 transition"
+                  >
+                    <span className={currentLang.includes('en') ? 'text-blue-600 font-bold' : ''}>English</span>
+                    {currentLang.includes('en') && <Check size={16} className="text-blue-600" />}
+                  </button>
+                  <button 
+                    onClick={() => handleLanguageChange('kh')}
+                    className="flex items-center justify-between w-full px-4 py-3 text-sm hover:bg-blue-50 dark:hover:bg-gray-700 transition"
+                  >
+                    <span className={currentLang.includes('kh') ? 'text-blue-600 font-bold' : ''}>ភាសាខ្មែរ</span>
+                    {currentLang.includes('kh') && <Check size={16} className="text-blue-600" />}
+                  </button>
+                </div>
+              )}
+            </div>
 
-          {/* Login Button */}
-          <Link href="/login" className="hidden sm:block">
+            {/* Dark Mode */}
             <button
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 
-                               text-white px-5 py-2 rounded-full font-semibold 
-                               transition shadow-md hover:shadow-lg active:scale-95 text-sm md:text-base"
+              onClick={toggleDarkMode}
+              className="p-2 rounded-lg text-gray-700 dark:text-yellow-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
             >
-              <LogIn size={18} />
-              Login
+              {darkMode ? <Sun size={24} /> : <Moon size={24} />}
             </button>
-          </Link>
 
-          {/* Mobile Menu */}
-          <button
-            className="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-200 
-                       hover:bg-gray-100 dark:hover:bg-gray-800 transition"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            {menuOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
+            {/* Desktop Login */}
+            <button
+              onClick={() => setShowLogin(true)}
+              className="hidden md:flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full font-bold transition shadow-md"
+            >
+              <LogIn size={20} /> Login
+            </button>
+
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-200"
+              onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen); }}
+            >
+              {menuOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* Mobile Drawer */}
-      {menuOpen && (
-        <div
-          className="md:hidden absolute top-full left-0 w-full 
-                        bg-white/90 dark:bg-gray-900/90 backdrop-blur-md
-                        border-t border-gray-200 dark:border-gray-700 
-                        shadow-lg px-6 py-6 flex flex-col gap-4"
-        >
-          {navLinks.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              onClick={() => setMenuOpen(false)}
-              className="text-gray-700 dark:text-gray-200 font-medium 
-                         text-lg hover:text-blue-700 dark:hover:text-blue-400 
-                         transition py-2 border-b last:border-0"
-            >
-              {item.label}
-            </Link>
-          ))}
+        {/* ✅ MOBILE MENU */}
+        {menuOpen && (
+          <div className="md:hidden px-6 pb-6 pt-2 bg-white dark:bg-gray-900 shadow-md animate-in slide-in-from-top duration-300 border-t dark:border-gray-800">
+            <ul className="flex flex-col gap-4">
+              {navLinks.map((item) => (
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="block text-gray-700 dark:text-gray-200 text-lg font-bold py-2 border-b dark:border-gray-800"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
 
-          {/* Mobile Login */}
-          <Link href="/login" onClick={() => setMenuOpen(false)}>
+            {/* Mobile Login */}
             <button
-              className="w-full mt-2 bg-blue-600 hover:bg-blue-700 
-                               text-white py-3 rounded-xl font-bold 
-                               flex items-center justify-center gap-2 transition"
+              onClick={() => {
+                setShowLogin(true);
+                setMenuOpen(false);
+              }}
+              className="mt-6 w-full flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-bold transition"
             >
-              <LogIn size={20} />
-              Login
+              <LogIn size={24} /> Login
             </button>
-          </Link>
+          </div>
+        )}
+      </nav>
+
+      {/* LOGIN MODAL */}
+      {showLogin && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            onClick={() => setShowLogin(false)}
+          />
+          <div className="relative w-full max-w-sm animate-in zoom-in-95 duration-200">
+            <LoginForm onClose={() => setShowLogin(false)} />
+          </div>
         </div>
       )}
-    </nav>
+    </>
   );
 }

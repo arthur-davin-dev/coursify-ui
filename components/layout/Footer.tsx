@@ -25,7 +25,7 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 py-14 px-4 sm:px-6 lg:px-8 mt-auto font-[Inter,sans-serif]">
+    <footer className="bg-white dark:bg-[#0F1226] border-t border-gray-200 dark:border-gray-700 py-14 px-4 sm:px-6 lg:px-8 mt-auto font-[Inter,sans-serif]">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
 

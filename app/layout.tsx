@@ -36,7 +36,7 @@
 
 
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter,Odor_Mean_Chey } from "next/font/google";
 import "./globals.css";
 import NavbarWrapper from "@/components/layout/NavbarWrapper";
 import Footer from "@/components/layout/Footer";
@@ -50,6 +50,13 @@ export const metadata: Metadata = {
   description: "Learn from industry experts.",
 };
 
+const odorMeanChey = Odor_Mean_Chey({
+  weight: "400", // Only weight 400 is available for this font
+  subsets: ["khmer"],
+  variable: "--font-odor",
+  display: "swap",
+});
+
 export default function RootLayout({
   children,
 }: {
@@ -57,7 +64,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen flex flex-col`}>
+      <body className={`${inter.className} ${odorMeanChey.variable} font-sans min-h-screen flex flex-col`}>
         <StoreProvider>
           {/* ✅ Wrap everything in the I18nProvider */}
           <I18nProvider> 

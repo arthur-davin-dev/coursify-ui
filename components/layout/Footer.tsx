@@ -36,7 +36,7 @@ const Footer = () => {
             </h4>
             <img
               src="/logoISTAD.png"
-              className="h-24 mb-5 object-contain"
+              className="h-34 mb-8 object-contain"
               alt="ISTAD Logo"
             />
             <p className="text-[15px] text-gray-500 dark:text-gray-400 leading-relaxed">

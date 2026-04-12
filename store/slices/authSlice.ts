@@ -7,6 +7,7 @@ export interface AuthState {
     email: string;
     role: 'STUDENT' | 'TEACHER';
   } | null;
+  token: string | null; // ✅ ADD
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
@@ -14,7 +15,9 @@ export interface AuthState {
 
 const initialState: AuthState = {
   user: null,
-  isAuthenticated: false,
+  // ✅ rehydrate from localStorage on page refresh — use "user_token" to match login
+  token: typeof window !== 'undefined' ? localStorage.getItem('user_token') : null,
+  isAuthenticated: typeof window !== 'undefined' ? !!localStorage.getItem('user_token') : false,
   loading: false,
   error: null,
 };
@@ -28,6 +31,11 @@ export const authSlice = createSlice({
       state.isAuthenticated = !!action.payload;
       state.error = null;
     },
+    setToken: (state, action: PayloadAction<string>) => { // ✅ ADD
+      state.token = action.payload;
+      state.isAuthenticated = true;
+      localStorage.setItem('user_token', action.payload);
+    },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
@@ -36,12 +44,14 @@ export const authSlice = createSlice({
     },
     logout: (state) => {
       state.user = null;
+      state.token = null; // ✅ ADD
       state.isAuthenticated = false;
       state.loading = false;
       state.error = null;
+      localStorage.removeItem('user_token'); // ✅ ADD
     },
   },
 });
 
-export const { setUser, setLoading, setError, logout } = authSlice.actions;
+export const { setUser, setToken, setLoading, setError, logout } = authSlice.actions;
 export default authSlice.reducer;

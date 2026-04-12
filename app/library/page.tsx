@@ -5,6 +5,7 @@ import { useGetBooksQuery } from "@/store/services/bookApi";
 import type { Book } from "@/store/services/bookApi";
 import BookCard from "@/components/book/BookCard";
 import { Search, RefreshCcw } from "lucide-react";
+import BookHero from "@/components/book/BookHero";
 
 export default function BooksPage() {
   const [search, setSearch] = useState("");
@@ -26,6 +27,7 @@ export default function BooksPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+      <BookHero/>
       {/* Header Section */}
       <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">

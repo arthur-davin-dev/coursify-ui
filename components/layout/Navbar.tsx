@@ -417,7 +417,7 @@ export default function Navbar() {
                   <p className="text-sm font-bold dark:text-white">{user ? `${user.firstName} ${user.lastName}` : "Guest Student"}</p>
                   <p className="text-xs text-gray-500 truncate">{user?.email || "Welcome back!"}</p>
                 </div>
-                <Link href="/profile" className="flex items-center px-4 py-3 text-sm hover:bg-blue-50 dark:hover:bg-gray-700 transition dark:text-gray-200">{t("Profile")}</Link>
+                <Link href="/dashboard/teacher" className="flex items-center px-4 py-3 text-sm hover:bg-blue-50 dark:hover:bg-gray-700 transition dark:text-gray-200">{t("Profile")}</Link>
                 <button 
                   onClick={() => { localStorage.removeItem("user_token"); window.location.reload(); }}
                   className="w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 font-bold"

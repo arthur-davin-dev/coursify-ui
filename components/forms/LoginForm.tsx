@@ -246,6 +246,8 @@ import Link from "next/link";
 import { useLoginMutation } from "@/store/features/auth/authApi";
 import { toast } from "sonner";
 import { signInSocial } from "@/lib/actions/auth-action";
+import { useDispatch } from "react-redux";
+import { setToken, setUser } from "@/store/slices/authSlice";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -303,6 +305,7 @@ type SocialProvider = "google" | "github" | "facebook";
 
 export function LoginForm({ onClose }: { onClose?: () => void }) {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [loginMutation, { isLoading: isLoginLoading }] = useLoginMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -337,9 +340,13 @@ export function LoginForm({ onClose }: { onClose?: () => void }) {
         setError("Login failed: no token received");
         return;
       }
+      dispatch(setToken(token));
+      if (result?.user ?? result?.data?.user) {
+        dispatch(setUser(result?.user ?? result?.data?.user));
+      }
 
-      localStorage.setItem("user_token", token);
-      window.dispatchEvent(new Event("auth-change")); // ✅ Navbar re-fetches user
+      localStorage.setItem("user_token", token); // already done in setToken, but keep for safety
+      window.dispatchEvent(new Event("auth-change"));
       toast.success("Welcome back!");
 
       if (onClose) {
@@ -347,9 +354,7 @@ export function LoginForm({ onClose }: { onClose?: () => void }) {
       } else {
         router.push("/");
       }
-
     } catch (err: any) {
-      console.error("Login error:", err);
       const message = err?.data?.message || err?.data?.error || "Invalid email or password";
       setError(message);
       toast.error(message);

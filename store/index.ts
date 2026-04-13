@@ -8,7 +8,6 @@ import "./services/bookApi";
 import "./services/lessonsApi";  // ← ADD THIS
 import "./features/categories/categoriesApi";
 import "./features/users/userSlice";
-import "./services/dashboardApi"; 
 
 export const store = configureStore({
   reducer: {

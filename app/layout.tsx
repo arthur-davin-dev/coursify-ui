@@ -41,7 +41,7 @@ import "./globals.css";
 import NavbarWrapper from "@/components/layout/NavbarWrapper";
 import Footer from "@/components/layout/Footer";
 import StoreProvider from "@/store/StoreProvider";
-import I18nProvider from "@/components/I18nProvider"; // ✅ Import the new provider
+import I18nProvider from "@/components/I18nProvider"; 
 
 const inter = Inter({ subsets: ["latin"] });
 

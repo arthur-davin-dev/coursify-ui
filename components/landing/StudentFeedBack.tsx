@@ -27,7 +27,7 @@ const stories = [
     mainStatement: "The data science track is rigorous but rewarding. The real-world datasets we worked on gave me the confidence to ace my technical interviews.",
     name: "KHDEMY",
     title: "Data Scientist",
-    profile: "/student/davin3.jpg",
+    profile: "/student/KHdemy.JPG",
   },
   {
     mainStatement: "I love the community aspect! Being able to discuss marketing strategies with peers from around the world adds a whole new dimension to online learning.",

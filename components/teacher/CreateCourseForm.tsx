@@ -4,23 +4,54 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import {
-  BookOpen, Video, Tag, ChevronUp, ChevronDown,
-  X, Plus, AlertCircle, Loader2, ImagePlus, ArrowRight, Check,
+  BookOpen,
+  Video,
+  Tag,
+  ChevronUp,
+  ChevronDown,
+  X,
+  Plus,
+  AlertCircle,
+  Loader2,
+  ImagePlus,
+  ArrowRight,
+  Check,
 } from "lucide-react";
 import Link from "next/link";
 import { useCreateCourseMutation } from "@/store/services/courseApi";
 import { useGetCategoriesQuery } from "@/store/features/categories/categoriesApi";
 
 const DEFAULT_TAGS = [
-  "JavaScript","Python","React","Node.js","TypeScript","CSS","HTML",
-  "Java","C++","Machine Learning","Data Science","UI/UX","DevOps",
-  "Docker","SQL","MongoDB","REST API","Git","Linux",
-  "Beginner","Intermediate","Advanced","Free","Certificate",
+  "JavaScript",
+  "Python",
+  "React",
+  "Node.js",
+  "TypeScript",
+  "CSS",
+  "HTML",
+  "Java",
+  "C++",
+  "Machine Learning",
+  "Data Science",
+  "UI/UX",
+  "DevOps",
+  "Docker",
+  "SQL",
+  "MongoDB",
+  "REST API",
+  "Git",
+  "Linux",
+  "Beginner",
+  "Intermediate",
+  "Advanced",
+  "Free",
+  "Certificate",
 ];
 
 const inputCls = [
   "w-full rounded-xl px-4 py-3 text-sm outline-none transition-all",
   "bg-[var(--bg-soft)] border border-[var(--border)]",
+  "dark:bg-gray-800 dark:border-gray-700 dark:text-white",
   "text-[var(--text)] placeholder:text-[var(--text-muted)]",
   "focus:border-primary focus:ring-2 focus:ring-primary/10",
 ].join(" ");
@@ -34,7 +65,9 @@ export default function CreateCourseForm() {
   const { data: categoriesRaw = [] } = useGetCategoriesQuery();
   const categories = Array.isArray(categoriesRaw)
     ? categoriesRaw
-    : (categoriesRaw as any)?.categories ?? (categoriesRaw as any)?.data ?? [];
+    : ((categoriesRaw as any)?.categories ??
+      (categoriesRaw as any)?.data ??
+      []);
 
   const [error, setError] = useState("");
   const [tagInput, setTagInput] = useState("");
@@ -55,7 +88,9 @@ export default function CreateCourseForm() {
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
@@ -105,7 +140,10 @@ export default function CreateCourseForm() {
     }));
   const removeLesson = (i: number) => {
     if (form.lessons.length === 1) return;
-    setForm((p) => ({ ...p, lessons: p.lessons.filter((_, idx) => idx !== i) }));
+    setForm((p) => ({
+      ...p,
+      lessons: p.lessons.filter((_, idx) => idx !== i),
+    }));
   };
   const moveLesson = (i: number, dir: number) => {
     const arr = [...form.lessons];
@@ -169,7 +207,7 @@ export default function CreateCourseForm() {
   };
 
   const filteredSuggestions = DEFAULT_TAGS.filter((t) =>
-    t.toLowerCase().includes(tagInput.toLowerCase())
+    t.toLowerCase().includes(tagInput.toLowerCase()),
   );
 
   return (
@@ -178,17 +216,23 @@ export default function CreateCourseForm() {
         {/* Header */}
         <div className="mb-8">
           <nav className="flex items-center gap-1.5 text-xs mb-6 text-[var(--text-muted)]">
-            <Link href="/teacher/dashboard" className="hover:text-indigo-600 transition-colors">
+            <Link
+              href="/teacher/dashboard"
+              className="hover:text-indigo-600 transition-colors"
+            >
               Dashboard
             </Link>
             <span>/</span>
-            <span className="font-semibold text-[var(--text)]">Create Course</span>
+            <span className="font-semibold text-[var(--text)]">
+              Create Course
+            </span>
           </nav>
           <h1 className="text-3xl font-bold text-[var(--text)] tracking-tight">
             Create a Course
           </h1>
           <p className="text-sm text-[var(--text-muted)] mt-1">
-            Fill in the details below. Add lessons and tag your course for discoverability.
+            Fill in the details below. Add lessons and tag your course for
+            discoverability.
           </p>
         </div>
 
@@ -199,7 +243,9 @@ export default function CreateCourseForm() {
               <div className="w-9 h-9 rounded-xl bg-primary/8 border border-primary/20 flex items-center justify-center">
                 <BookOpen size={17} className="text-primary" />
               </div>
-              <h2 className="text-base font-bold text-[var(--text)]">Course Details</h2>
+              <h2 className="text-base font-bold text-[var(--text)]">
+                Course Details
+              </h2>
             </div>
 
             <div className="space-y-5">
@@ -245,7 +291,11 @@ export default function CreateCourseForm() {
                 >
                   <option value="">Select a category…</option>
                   {categories.map((c: any) => (
-                    <option key={c.id} value={String(c.id)}>
+                    <option
+                      key={c.id}
+                      value={String(c.id)}
+                      className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                    >
                       {c.name}
                     </option>
                   ))}
@@ -278,7 +328,9 @@ export default function CreateCourseForm() {
               {/* isPublished */}
               <div className="flex items-center justify-between rounded-xl px-4 py-3 bg-[var(--bg-soft)] border border-[var(--border)]">
                 <div>
-                  <p className="text-sm font-semibold text-[var(--text)]">Publish immediately</p>
+                  <p className="text-sm font-semibold text-[var(--text)]">
+                    Publish immediately
+                  </p>
                   <p className="text-xs text-[var(--text-muted)] mt-0.5">
                     Students can find and enroll as soon as it's created.
                   </p>
@@ -291,10 +343,12 @@ export default function CreateCourseForm() {
                     onChange={handleChange}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:ring-2 peer-focus:ring-primary/20
+                  <div
+                    className="w-11 h-6 bg-gray-200 peer-focus:ring-2 peer-focus:ring-primary/20
                     rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-primary
                     after:content-[''] after:absolute after:top-[2px] after:left-[2px]
-                    after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all" />
+                    after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"
+                  />
                 </label>
               </div>
 
@@ -304,11 +358,21 @@ export default function CreateCourseForm() {
                 <div className="flex gap-4 items-start">
                   <div className="w-36 h-24 rounded-xl overflow-hidden bg-primary/5 border border-[var(--border)] flex items-center justify-center flex-shrink-0">
                     {uploading ? (
-                      <Loader2 size={20} className="text-primary animate-spin" />
+                      <Loader2
+                        size={20}
+                        className="text-primary animate-spin"
+                      />
                     ) : thumbPreview ? (
-                      <img src={thumbPreview} alt="thumbnail" className="w-full h-full object-cover" />
+                      <img
+                        src={thumbPreview}
+                        alt="thumbnail"
+                        className="w-full h-full object-cover"
+                      />
                     ) : (
-                      <ImagePlus size={22} className="text-[var(--text-muted)]" />
+                      <ImagePlus
+                        size={22}
+                        className="text-[var(--text-muted)]"
+                      />
                     )}
                   </div>
                   <div className="flex-1 space-y-2">
@@ -372,9 +436,10 @@ export default function CreateCourseForm() {
                         type="button"
                         onClick={() => toggleTag(tag)}
                         className={`inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-semibold border transition-all
-                          ${selected
-                            ? "bg-primary text-white border-primary"
-                            : "bg-[var(--bg-soft)] border-[var(--border)] text-[var(--text-muted)] hover:border-primary/40 hover:text-primary"
+                          ${
+                            selected
+                              ? "bg-primary text-white border-primary"
+                              : "bg-[var(--bg-soft)] border-[var(--border)] text-[var(--text-muted)] hover:border-primary/40 hover:text-primary"
                           }`}
                       >
                         {selected && <Check size={10} />}
@@ -408,11 +473,19 @@ export default function CreateCourseForm() {
                         e.preventDefault();
                         addTag();
                       }
-                      if (e.key === "Backspace" && !tagInput && form.tags.length)
+                      if (
+                        e.key === "Backspace" &&
+                        !tagInput &&
+                        form.tags.length
+                      )
                         removeTag(form.tags[form.tags.length - 1]);
                     }}
                     onBlur={() => addTag()}
-                    placeholder={form.tags.length === 0 ? "Type a custom tag and press Enter…" : "Add more…"}
+                    placeholder={
+                      form.tags.length === 0
+                        ? "Type a custom tag and press Enter…"
+                        : "Add more…"
+                    }
                     className="flex-1 min-w-[180px] bg-transparent text-sm outline-none text-[var(--text)] placeholder:text-[var(--text-muted)]"
                   />
                 </div>
@@ -430,7 +503,8 @@ export default function CreateCourseForm() {
                 <h2 className="text-base font-bold text-[var(--text)]">
                   Lessons
                   <span className="ml-2 text-xs font-normal text-[var(--text-muted)]">
-                    ({form.lessons.length} {form.lessons.length === 1 ? "lesson" : "lessons"})
+                    ({form.lessons.length}{" "}
+                    {form.lessons.length === 1 ? "lesson" : "lessons"})
                   </span>
                 </h2>
               </div>
@@ -447,16 +521,32 @@ export default function CreateCourseForm() {
 
             <div className="space-y-4">
               {form.lessons.map((lesson, i) => (
-                <div key={i} className="rounded-xl p-5 bg-[var(--bg-soft)] border border-[var(--border)] group">
+                <div
+                  key={i}
+                  className="rounded-xl p-5 bg-[var(--bg-soft)] border border-[var(--border)] group"
+                >
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-[0.65rem] font-bold uppercase tracking-widest text-[var(--text-muted)]">
                       Lesson {i + 1}
                     </span>
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       {[
-                        { fn: () => moveLesson(i, -1), disabled: i === 0, icon: <ChevronUp size={13} /> },
-                        { fn: () => moveLesson(i, 1), disabled: i === form.lessons.length - 1, icon: <ChevronDown size={13} /> },
-                        { fn: () => removeLesson(i), disabled: form.lessons.length === 1, icon: <X size={13} />, danger: true },
+                        {
+                          fn: () => moveLesson(i, -1),
+                          disabled: i === 0,
+                          icon: <ChevronUp size={13} />,
+                        },
+                        {
+                          fn: () => moveLesson(i, 1),
+                          disabled: i === form.lessons.length - 1,
+                          icon: <ChevronDown size={13} />,
+                        },
+                        {
+                          fn: () => removeLesson(i),
+                          disabled: form.lessons.length === 1,
+                          icon: <X size={13} />,
+                          danger: true,
+                        },
                       ].map(({ fn, disabled, icon, danger }, idx) => (
                         <button
                           key={idx}
@@ -477,7 +567,9 @@ export default function CreateCourseForm() {
                       <label className={labelCls}>Lesson Title</label>
                       <input
                         value={lesson.title}
-                        onChange={(e) => updateLesson(i, "title", e.target.value)}
+                        onChange={(e) =>
+                          updateLesson(i, "title", e.target.value)
+                        }
                         placeholder="e.g. Setting Up Spring Boot"
                         className={inputCls}
                       />
@@ -486,7 +578,9 @@ export default function CreateCourseForm() {
                       <label className={labelCls}>Video URL</label>
                       <input
                         value={lesson.video_url}
-                        onChange={(e) => updateLesson(i, "video_url", e.target.value)}
+                        onChange={(e) =>
+                          updateLesson(i, "video_url", e.target.value)
+                        }
                         placeholder="https://youtu.be/..."
                         className={inputCls}
                       />
@@ -495,7 +589,9 @@ export default function CreateCourseForm() {
                       <label className={labelCls}>Description</label>
                       <textarea
                         value={lesson.description}
-                        onChange={(e) => updateLesson(i, "description", e.target.value)}
+                        onChange={(e) =>
+                          updateLesson(i, "description", e.target.value)
+                        }
                         placeholder="What does this lesson cover?"
                         rows={2}
                         className={`${inputCls} resize-none`}
@@ -546,11 +642,17 @@ export default function CreateCourseForm() {
                 ${saved ? "bg-emerald-500" : "bg-primary hover:bg-primary/90"}`}
             >
               {isCreating ? (
-                <><Loader2 size={16} className="animate-spin" /> Publishing…</>
+                <>
+                  <Loader2 size={16} className="animate-spin" /> Publishing…
+                </>
               ) : saved ? (
-                <><Check size={16} /> Published!</>
+                <>
+                  <Check size={16} /> Published!
+                </>
               ) : (
-                <>Publish Course <ArrowRight size={16} /></>
+                <>
+                  Publish Course <ArrowRight size={16} />
+                </>
               )}
             </button>
           </div>

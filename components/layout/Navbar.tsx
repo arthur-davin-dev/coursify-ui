@@ -340,7 +340,7 @@ export default function Navbar() {
       <div className="flex items-center justify-between px-4 sm:px-8 md:px-10 lg:px-20 py-3">
         
         <Link href="/" className="flex items-center">
-          <Image src="/logocoursifydark.jpg.png" alt="Logo" width={90} height={52} className="object-contain" priority />
+          <Image src="/logocoursifydark.jpg.png" alt="Logo" width={70} height={52} className="object-contain" priority />
         </Link>
 
         {/* Desktop Links */}

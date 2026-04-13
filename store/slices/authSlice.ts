@@ -2,12 +2,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface AuthState {
   user: {
-    id: string;
+    id: number;
     username: string;
     email: string;
-    role: 'STUDENT' | 'TEACHER';
+    firstName: string;
+    lastName: string;
+    role: "STUDENT" | "TEACHER" | "ADMIN";
+    imageUrl: string;
   } | null;
-  token: string | null; // ✅ ADD
+  token: string | null;
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
@@ -15,26 +18,25 @@ export interface AuthState {
 
 const initialState: AuthState = {
   user: null,
-  // ✅ rehydrate from localStorage on page refresh — use "user_token" to match login
-  token: typeof window !== 'undefined' ? localStorage.getItem('user_token') : null,
-  isAuthenticated: typeof window !== 'undefined' ? !!localStorage.getItem('user_token') : false,
+  token: typeof window !== "undefined" ? localStorage.getItem("user_token") : null,
+  isAuthenticated: typeof window !== "undefined" ? !!localStorage.getItem("user_token") : false,
   loading: false,
   error: null,
 };
 
 export const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<AuthState['user']>) => {
+    setUser: (state, action: PayloadAction<AuthState["user"]>) => {
       state.user = action.payload;
       state.isAuthenticated = !!action.payload;
       state.error = null;
     },
-    setToken: (state, action: PayloadAction<string>) => { // ✅ ADD
+    setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload;
       state.isAuthenticated = true;
-      localStorage.setItem('user_token', action.payload);
+      localStorage.setItem("user_token", action.payload);
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
@@ -44,11 +46,11 @@ export const authSlice = createSlice({
     },
     logout: (state) => {
       state.user = null;
-      state.token = null; // ✅ ADD
+      state.token = null;
       state.isAuthenticated = false;
       state.loading = false;
       state.error = null;
-      localStorage.removeItem('user_token'); // ✅ ADD
+      localStorage.removeItem("user_token");
     },
   },
 });

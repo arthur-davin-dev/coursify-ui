@@ -56,8 +56,6 @@
 
 // export const { useGetCoursesQuery, useGetCourseByIdQuery } = courseApi;
 
-
-
 import { baseApi } from "./baseApi";
 
 export type Lesson = {
@@ -73,6 +71,7 @@ export type Course = {
   title: string;
   description: string;
   thumbnail: string;
+  imageUrl?: string;
   price: number;
   isPublished: boolean;
   teacherId?: number;
@@ -101,6 +100,7 @@ export interface CreateCoursePayload {
   description: string;
   category_id: number;
   thumbnail?: string;
+ 
   price: number;
   isPublished: boolean;
   tags: string[];
@@ -132,8 +132,12 @@ export const courseApi = baseApi.injectEndpoints({
         body,
       }),
       invalidatesTags: ["Course"],
+      
     }),
-    updateCourse: builder.mutation<Course, { id: number; body: Partial<CreateCoursePayload> }>({
+    updateCourse: builder.mutation<
+      Course,
+      { id: number; body: Partial<CreateCoursePayload> }>
+      ({
       query: ({ id, body }) => ({
         url: `/courses/${id}`,
         method: "PATCH",
@@ -155,7 +159,11 @@ export const courseApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (_r, _e, id) => [{ type: "Course", id }],
     }),
+    getEnrollmentsByCourse: builder.query<any[], number>({
+      query: (courseId) => `/api/enrollments/course/${courseId}`,
+    }),
   }),
+  overrideExisting: true,
 });
 
 export const {
@@ -166,4 +174,5 @@ export const {
   useUpdateCourseMutation,
   useDeleteCourseMutation,
   usePublishCourseMutation,
+  useGetEnrollmentsByCourseQuery,
 } = courseApi;

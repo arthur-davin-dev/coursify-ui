@@ -41,7 +41,6 @@
 
 // // export const { useGetBooksQuery, useGetBookByIdQuery } = bookApi;
 
-
 // import { baseApi } from "./baseApi";
 
 // export type Book = {
@@ -79,7 +78,6 @@
 // });
 
 // export const { useGetBooksQuery, useGetBookByIdQuery } = bookApi;
-
 
 import { baseApi } from "./baseApi";
 
@@ -131,7 +129,10 @@ export const bookApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Book"],
     }),
-    updateBook: builder.mutation<Book, { id: number } & Partial<CreateBookPayload>>({
+    updateBook: builder.mutation<
+      Book,
+      { id: number } & Partial<CreateBookPayload>
+    >({
       query: ({ id, ...body }) => ({
         url: `/books/${id}`,
         method: "PATCH",
@@ -146,6 +147,10 @@ export const bookApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Book"],
     }),
+    getMyBooks: builder.query<BookResponse, void>({
+      query: () => "/books/my-books",
+      providesTags: ["Book"],
+    }),
   }),
 });
 
@@ -155,4 +160,5 @@ export const {
   useCreateBookMutation,
   useUpdateBookMutation,
   useDeleteBookMutation,
+  useGetMyBooksQuery,
 } = bookApi;

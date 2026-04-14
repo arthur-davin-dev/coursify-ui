@@ -1,21 +1,3 @@
-// import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-// export const baseApi = createApi({
-//   reducerPath: 'api',
-//   baseQuery: fetchBaseQuery({
-//     baseUrl: '/api', // This matches the rewrite source
-//     prepareHeaders: (headers, { getState }) => {
-//       // Logic to grab token from authSlice
-//       const token = (getState() as any).auth.token;
-//       if (token) {
-//         headers.set('authorization', `Bearer ${token}`);
-//       }
-//       return headers;
-//     },
-//   }),
-//   endpoints: () => ({}),
-// });
-
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const baseApi = createApi({
@@ -47,6 +29,6 @@ export const baseApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Course", "Book", "Category", "User"],
+  tagTypes: ["Course", "Book", "Category", "User","Enrollment","BookmarkBooks","BookmarkCourses"],
   endpoints: () => ({}),
 });

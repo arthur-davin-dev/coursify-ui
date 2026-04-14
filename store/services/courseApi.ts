@@ -159,9 +159,9 @@ export const courseApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (_r, _e, id) => [{ type: "Course", id }],
     }),
-    getEnrollmentsByCourse: builder.query<any[], number>({
-      query: (courseId) => `/api/enrollments/course/${courseId}`,
-    }),
+    // getEnrollmentsByCourse: builder.query<any[], number>({
+    //   query: (courseId) => `/api/enrollments/course/${courseId}`,
+    // }),
   }),
   overrideExisting: true,
 });
@@ -174,5 +174,5 @@ export const {
   useUpdateCourseMutation,
   useDeleteCourseMutation,
   usePublishCourseMutation,
-  useGetEnrollmentsByCourseQuery,
+  // useGetEnrollmentsByCourseQuery,
 } = courseApi;

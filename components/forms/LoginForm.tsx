@@ -187,6 +187,8 @@ export function LoginForm({
       }
 
       localStorage.setItem("user_token", token); // already done in setToken, but keep for safety
+      document.cookie = `user_token=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+      router.push("/");
       window.dispatchEvent(new Event("auth-change"));
       toast.success("Welcome back!");
 

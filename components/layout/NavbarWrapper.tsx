@@ -1,40 +1,88 @@
+// "use client";
+
+// import { useState, useEffect } from "react";
+// import NavbarNoAcc from "./NavbarNoAcc";
+// import Navbar from "./Navbar";
+
+// export default function NavbarWrapper() {
+//   const [hasAccount, setHasAccount] = useState(false);
+
+//   const checkAuth = () => {
+//     const user = localStorage.getItem("user_token");
+//     setHasAccount(!!user);
+//   };
+
+//   useEffect(() => {
+//     checkAuth();
+//     window.addEventListener("auth-change", checkAuth);
+//     return () => window.removeEventListener("auth-change", checkAuth);
+//   }, []);
+
+//   return <>{hasAccount ? <Navbar /> : <NavbarNoAcc />}</>;
+// }
+
 "use client";
 
 import { useState, useEffect } from "react";
 import NavbarNoAcc from "./NavbarNoAcc";
 import Navbar from "./Navbar";
 
-export default function NavbarWrapper() {
-  const [hasAccount, setHasAccount] = useState(false);
+type UserRole = "STUDENT" | "TEACHER" | null;
 
-  const checkAuth = () => {
-    const user = localStorage.getItem("user_token");
-    setHasAccount(!!user);
+export default function NavbarWrapper() {
+  const [role, setRole] = useState<UserRole>(null);
+  const [loading, setLoading] = useState(true);
+
+  const checkAuth = async () => {
+    const token = localStorage.getItem("user_token");
+
+    if (!token) {
+      setRole(null);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/users/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) {
+        localStorage.removeItem("user_token");
+        setRole(null);
+        setLoading(false);
+        return;
+      }
+
+      const data = await res.json();
+      // role is "TEACHER" or "STUDENT" (uppercase from your API)
+      setRole(data.role ?? null);
+    } catch (err) {
+      console.error(err);
+      setRole(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     checkAuth();
+
+    // Fires when your LoginForm calls window.dispatchEvent(new Event("auth-change"))
     window.addEventListener("auth-change", checkAuth);
-    return () => window.removeEventListener("auth-change", checkAuth);
+
+    // Fires when localStorage changes in same tab via storage polyfill or other tabs
+    window.addEventListener("storage", checkAuth);
+
+    return () => {
+      window.removeEventListener("auth-change", checkAuth);
+      window.removeEventListener("storage", checkAuth);
+    };
   }, []);
 
-  return <>{hasAccount ? <Navbar /> : <NavbarNoAcc />}</>;
+  if (loading) return <div className="h-20" />;
+
+  if (role === "TEACHER") return <Navbar />;
+  if (role === "STUDENT") return <Navbar />;
+  return <NavbarNoAcc />;
 }
-
-// "use client";
-
-// import { useSelector } from "react-redux";
-// import NavbarHaveAcc from "./NavbarHaveAcc";
-// import NavbarNoAcc from "./NavbarNoAcc";
-// import { RootState } from "@/redux/store"; // Adjust path to your store type
-
-// export default function NavbarWrapper() {
-//   // Select your token from Redux
-//   const token = useSelector((state: RootState) => state.auth.token);
-
-//   return (
-//     <header className="sticky top-0 z-50">
-//       {token ? <NavbarHaveAcc /> : <NavbarNoAcc />}
-//     </header>
-//   );
-// }

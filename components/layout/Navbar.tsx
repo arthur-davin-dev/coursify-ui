@@ -267,6 +267,12 @@ function Avatar({ imageUrl, initials, size = 48 }: { imageUrl?: string | null; i
   return <span className="w-full h-full flex items-center justify-center bg-blue-600 text-white text-xs font-semibold pointer-events-none">{initials}</span>;
 }
 
+function getDashboardRoute(role?: string) {
+  if (role === "TEACHER") return "/dashboard/teacher";
+  if (role === "STUDENT") return "/dashboard/student";
+  return "/dashboard"; // fallback
+}
+
 export default function Navbar() {
   const { t } = useTranslation();
   const [mounted, setMounted] = useState(false);
@@ -290,8 +296,14 @@ export default function Navbar() {
       if (!token) return;
       try {
         const res = await fetch("/api/users/me", { headers: { Authorization: `Bearer ${token}` } });
+        // if (res.status === 401) {
+        //   localStorage.removeItem("user_token");
+        //   return;
+        // }
         if (res.status === 401) {
           localStorage.removeItem("user_token");
+          document.cookie = "user_token=; path=/; max-age=0"; // ✅ clear cookie too
+          // window.location.reload();
           return;
         }
         const data = await res.json();
@@ -417,7 +429,7 @@ export default function Navbar() {
                   <p className="text-sm font-bold dark:text-white">{user ? `${user.firstName} ${user.lastName}` : "Guest Student"}</p>
                   <p className="text-xs text-gray-500 truncate">{user?.email || "Welcome back!"}</p>
                 </div>
-                <Link href="/dashboard/teacher" className="flex items-center px-4 py-3 text-sm hover:bg-blue-50 dark:hover:bg-gray-700 transition dark:text-gray-200">{t("Profile")}</Link>
+                <Link href={getDashboardRoute(user?.role)} className="flex items-center px-4 py-3 text-sm hover:bg-blue-50 dark:hover:bg-gray-700 transition dark:text-gray-200">{t("Profile")}</Link>
                 <button 
                   onClick={() => { localStorage.removeItem("user_token"); window.location.reload(); }}
                   className="w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 font-bold"

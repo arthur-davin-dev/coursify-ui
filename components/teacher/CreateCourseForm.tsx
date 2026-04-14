@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useCreateCourseMutation } from "@/store/services/courseApi";
-import { useGetCategoriesQuery } from "@/store/features/categories/categoriesApi";
+import { useGetCategoriesQuery } from "@/store/services/categoryApi";
 
 const DEFAULT_TAGS = [
   "JavaScript",

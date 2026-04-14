@@ -1,15 +1,31 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useGetCoursesQuery } from "@/store/services/courseApi";
 import type { Course } from "@/store/services/courseApi";
+import { useGetCategoriesQuery } from "@/store/services/categoryApi";
 
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Search, SlidersHorizontal, ChevronDown, Check } from "lucide-react";
 import CourseCard from "@/components/course/CourseCard";
+import BannerCourse from "@/components/course/BannerCourse";
 
 export default function CoursePage() {
   const [search, setSearch] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { data, isLoading, isError, refetch } = useGetCoursesQuery();
+  const { data: categoriesData = [] } = useGetCategoriesQuery();
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setMobileFilterOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   const courses: Course[] = useMemo(() => {
     if (!data) return [];
@@ -17,19 +33,47 @@ export default function CoursePage() {
   }, [data]);
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return courses;
-    const q = search.toLowerCase();
-    return courses.filter(
-      (c) =>
-        c.title.toLowerCase().includes(q) ||
-        c.description?.toLowerCase().includes(q) ||
-        c.category?.name?.toLowerCase().includes(q) ||
-        c.tags?.some((t) => t.toLowerCase().includes(q))
-    );
-  }, [search, courses]);
+    let result = courses;
+
+    // Filter by category — check all possible fields the API might return
+    if (selectedCategoryId !== null) {
+      result = result.filter((c) => {
+        const id =
+          c.categoryId ??        // flat: categoryId
+          c.category?.id;        // nested: category.id
+        return id === selectedCategoryId;
+      });
+    }
+
+    // Filter by search
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter(
+        (c) =>
+          c.title.toLowerCase().includes(q) ||
+          c.description?.toLowerCase().includes(q) ||
+          c.categoryName?.toLowerCase().includes(q) ||
+          c.category?.name?.toLowerCase().includes(q) ||
+          c.tags?.some((t) => t.toLowerCase().includes(q))
+      );
+    }
+
+    return result;
+  }, [search, selectedCategoryId, courses]);
+
+  const activeCategoryName =
+    selectedCategoryId === null
+      ? "All"
+      : categoriesData.find((c) => c.id === selectedCategoryId)?.name ?? "All";
+
+  const handleSelectCategory = (id: number | null) => {
+    setSelectedCategoryId(id);
+    setMobileFilterOpen(false);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+      <BannerCourse />
 
       {/* Header */}
       <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 sm:px-8 md:px-10 lg:px-20 py-8">
@@ -40,7 +84,7 @@ export default function CoursePage() {
           Explore our full library of courses
         </p>
 
-        {/* Search */}
+        {/* Search row */}
         <div className="flex gap-3 max-w-xl">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -55,18 +99,65 @@ export default function CoursePage() {
                          focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition"
             />
           </div>
-          <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200
-                             dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-600
-                             dark:text-gray-300 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-            <SlidersHorizontal className="w-4 h-4" />
-            Filter
-          </button>
+
+          {/* Mobile-only filter button */}
+          <div className="relative sm:hidden" ref={dropdownRef}>
+            <button
+              onClick={() => setMobileFilterOpen((v) => !v)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm transition
+                ${mobileFilterOpen || selectedCategoryId !== null
+                  ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                  : "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                }`}
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+              <span className="max-w-[80px] truncate">{activeCategoryName}</span>
+              <ChevronDown
+                className={`w-3 h-3 transition-transform ${mobileFilterOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {mobileFilterOpen && (
+              <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200
+                              dark:border-gray-700 rounded-2xl shadow-xl z-20 overflow-hidden py-1">
+                <CategoryOption
+                  label="All"
+                  selected={selectedCategoryId === null}
+                  onSelect={() => handleSelectCategory(null)}
+                />
+                {categoriesData.map((cat) => (
+                  <CategoryOption
+                    key={cat.id}
+                    label={cat.name}
+                    selected={selectedCategoryId === cat.id}
+                    onSelect={() => handleSelectCategory(cat.id)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Desktop category pills */}
+        <div className="hidden sm:flex flex-wrap gap-2 mt-5">
+          <CategoryPill
+            label="All"
+            active={selectedCategoryId === null}
+            onClick={() => handleSelectCategory(null)}
+          />
+          {categoriesData.map((cat) => (
+            <CategoryPill
+              key={cat.id}
+              label={cat.name}
+              active={selectedCategoryId === cat.id}
+              onClick={() => handleSelectCategory(cat.id)}
+            />
+          ))}
         </div>
       </div>
 
       {/* Body */}
       <div className="px-4 sm:px-8 md:px-10 lg:px-20 py-8">
-
         {/* Skeleton */}
         {isLoading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -95,9 +186,7 @@ export default function CoursePage() {
         {/* Error */}
         {isError && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <p className="text-red-500 font-medium mb-3">
-              Failed to load courses.
-            </p>
+            <p className="text-red-500 font-medium mb-3">Failed to load courses.</p>
             <button
               onClick={refetch}
               className="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm hover:bg-blue-700 transition"
@@ -111,7 +200,9 @@ export default function CoursePage() {
         {!isLoading && !isError && filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <p className="text-gray-400 text-lg font-medium">No courses found</p>
-            <p className="text-gray-300 text-sm mt-1">Try a different search term</p>
+            <p className="text-gray-300 text-sm mt-1">
+              Try a different search term or category
+            </p>
           </div>
         )}
 
@@ -120,6 +211,11 @@ export default function CoursePage() {
           <>
             <p className="text-sm text-gray-400 mb-4">
               Showing {filtered.length} course{filtered.length !== 1 ? "s" : ""}
+              {selectedCategoryId !== null && (
+                <span className="ml-1">
+                  in <span className="text-blue-500 font-medium">{activeCategoryName}</span>
+                </span>
+              )}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filtered.map((course) => (
@@ -133,115 +229,51 @@ export default function CoursePage() {
   );
 }
 
+/* ── Sub-components ── */
 
-// "use client";
+function CategoryPill({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 border
+        ${active
+          ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+          : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400"
+        }`}
+    >
+      {label}
+    </button>
+  );
+}
 
-// import { Star, Bookmark, Clock } from "lucide-react";
-// import { useState } from "react";
-// import Link from "next/link";
-// import type { Course } from "@/store/services/courseApi";
-
-// export default function CourseCard({ course }: { course?: Course }) {
-//   const [saved, setSaved] = useState(false);
-
-//   // ✅ Prevent crash if course is undefined
-//   if (!course) {
-//     return (
-//       <div className="w-full h-[320px] bg-gray-100 dark:bg-gray-700 rounded-3xl animate-pulse" />
-//     );
-//   }
-
-//   // ✅ Handle thumbnail safely (API may return imageUrl instead)
-//   const thumbnailSrc =
-//     course.thumbnail ||
-//     (course as any).imageUrl ||
-//     "/avatar.png";
-
-//   // ✅ Safe category fallback
-//   const category =
-//     course.categoryName ??
-//     course.category?.name ??
-//     course.tags?.[0] ??
-//     "Course";
-
-//   return (
-//     <Link href={`/courses/${course.id}`} className="block">
-//       <div className="group w-full bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer h-full">
-        
-//         {/* Image */}
-//         <div className="relative h-[200px] p-3 pb-0">
-//           <div className="relative h-full w-full rounded-2xl overflow-hidden">
-//             <img
-//               src={thumbnailSrc}
-//               alt={course.title || "course"}
-//               className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-//             />
-
-//             {/* Category */}
-//             <span className="absolute top-3 left-3 z-10 bg-[#1E2A78] text-[#C7CFFF] text-xs font-semibold uppercase tracking-wider px-3 py-1.5 rounded-full font-mono">
-//               {category}
-//             </span>
-
-//             {/* Bookmark */}
-//             <button
-//               onClick={(e) => {
-//                 e.preventDefault();
-//                 e.stopPropagation();
-//                 setSaved(!saved);
-//               }}
-//               className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center transition-colors hover:bg-white/30"
-//             >
-//               <Bookmark
-//                 className={`w-4 h-4 stroke-[1.8px] transition-colors ${
-//                   saved ? "fill-white stroke-white" : "fill-none stroke-white"
-//                 }`}
-//               />
-//             </button>
-//           </div>
-//         </div>
-
-//         {/* Content */}
-//         <div className="px-5 py-4">
-//           <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight leading-tight mb-1 line-clamp-1">
-//             {course.title || "Untitled Course"}
-//           </h3>
-
-//           <p className="text-sm text-gray-400 leading-relaxed mb-4 line-clamp-2">
-//             {course.description || "No description available"}
-//           </p>
-
-//           <div className="border-t border-gray-100 dark:border-gray-700 pt-4 flex items-center justify-between">
-            
-//             {/* Price */}
-//             <span className="text-2xl font-extrabold text-emerald-500">
-//               {course.price === 0
-//                 ? "Free"
-//                 : `$${course.price ?? 0}`}
-//             </span>
-
-//             {/* Right Info */}
-//             <div className="flex items-center gap-3">
-              
-//               {/* Duration */}
-//               {course.duration && (
-//                 <span className="flex items-center gap-1 text-xs font-semibold text-gray-400 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 px-3 py-1.5 rounded-full">
-//                   <Clock className="w-3 h-3" />
-//                   {course.duration}
-//                 </span>
-//               )}
-
-//               {/* Rating */}
-//               <div className="flex items-center gap-1">
-//                 <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-//                 <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-//                   {course.rating?.toFixed(1) ?? "N/A"}
-//                 </span>
-//               </div>
-
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </Link>
-//   );
-// }
+function CategoryOption({
+  label,
+  selected,
+  onSelect,
+}: {
+  label: string;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      onClick={onSelect}
+      className={`w-full flex items-center justify-between px-4 py-2.5 text-sm transition
+        ${selected
+          ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium"
+          : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+        }`}
+    >
+      {label}
+      {selected && <Check className="w-3.5 h-3.5" />}
+    </button>
+  );
+}

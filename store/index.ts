@@ -6,10 +6,11 @@ import { baseApi } from "./services/baseApi";
 import "./services/courseApi";
 import "./services/bookApi";
 import "./services/lessonsApi";  // ← ADD THIS
-import "./features/categories/categoriesApi";
+import "./services/categoryApi";
 import "./features/users/userSlice";
 import "./services/enrollmentApi";
 import "./services/bookmarkApi";
+import "./services/progressApi";
 
 export const store = configureStore({
   reducer: {

@@ -7,6 +7,10 @@ import { Menu, X, Sun, Moon, LogIn, Globe, Check, ChevronDown } from "lucide-rea
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n"; 
 import { LoginForm } from "../forms/LoginForm";
+import AuthFlowModal from "../forms/AuthFlowWrapper";
+import { RegisterForm, RegisterFormData } from "../forms/RegisterForm";
+import { useRegisterMutation } from "@/store/features/auth/authApi";
+import { toast } from "sonner";
 
 export default function NavbarNoAcc() {
   const { t } = useTranslation();
@@ -16,6 +20,21 @@ export default function NavbarNoAcc() {
   const [scrolled, setScrolled] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
+  const [register, { isLoading: isRegistering }] = useRegisterMutation(); // ← add
+
+  const handleRegister = async (formData: RegisterFormData) => { // ← add
+    try {
+      await register(formData).unwrap();
+      toast.success("Registration successful!");
+      setShowSignup(false);
+      setShowLogin(true); // bring them back to login after signup
+    } catch (err: any) {
+      const message = err?.data?.message || err?.data?.error || "Registration failed";
+      toast.error(message);
+    }
+  };
 
   // Fix hydration and load theme
   useEffect(() => {
@@ -93,7 +112,7 @@ export default function NavbarNoAcc() {
               <li key={item.label}>
                 <Link
                   href={item.href}
-                  className="text-gray-700 dark:text-gray-200 font-bold hover:text-blue-700 dark:hover:text-blue-400 transition text-base lg:text-lg uppercase"
+                  className="text-[#2D368E] dark:text-gray-200 font-bold hover:text-blue-700 dark:hover:text-blue-400 transition text-base lg:text-lg uppercase"
                 >
                   {item.label}
                 </Link>
@@ -108,7 +127,7 @@ export default function NavbarNoAcc() {
             <div className="relative">
               <button
                 onClick={(e) => { e.stopPropagation(); setLangOpen(!langOpen); }}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
+                className="cursor-pointer flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
               >
                 <Globe size={18} className="text-blue-600" />
                 <span className="text-xs font-black uppercase">{currentLang.slice(0, 2)}</span>
@@ -119,14 +138,14 @@ export default function NavbarNoAcc() {
                 <div className="absolute right-0 mt-3 w-40 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                   <button 
                     onClick={() => handleLanguageChange('en')}
-                    className="flex items-center justify-between w-full px-4 py-3 text-sm hover:bg-blue-50 dark:hover:bg-gray-700 transition"
+                    className="cursor-pointer flex items-center justify-between w-full px-4 py-3 text-sm hover:bg-blue-50 dark:hover:bg-gray-700 transition"
                   >
                     <span className={currentLang.includes('en') ? 'text-blue-600 font-bold' : ''}>English</span>
                     {currentLang.includes('en') && <Check size={16} className="text-blue-600" />}
                   </button>
                   <button 
                     onClick={() => handleLanguageChange('kh')}
-                    className="flex items-center justify-between w-full px-4 py-3 text-sm hover:bg-blue-50 dark:hover:bg-gray-700 transition"
+                    className="cursor-pointer flex items-center justify-between w-full px-4 py-3 text-sm hover:bg-blue-50 dark:hover:bg-gray-700 transition"
                   >
                     <span className={currentLang.includes('kh') ? 'text-blue-600 font-bold' : ''}>ភាសាខ្មែរ</span>
                     {currentLang.includes('kh') && <Check size={16} className="text-blue-600" />}
@@ -138,7 +157,7 @@ export default function NavbarNoAcc() {
             {/* Dark Mode */}
             <button
               onClick={toggleDarkMode}
-              className="p-2 rounded-lg text-gray-700 dark:text-yellow-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+              className="cursor-pointer p-2 rounded-lg text-gray-700 dark:text-yellow-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
             >
               {darkMode ? <Sun size={24} /> : <Moon size={24} />}
             </button>
@@ -146,14 +165,14 @@ export default function NavbarNoAcc() {
             {/* Desktop Login */}
             <button
               onClick={() => setShowLogin(true)}
-              className="hidden md:flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full font-bold transition shadow-md"
+              className="cursor-pointer hidden md:flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full font-bold transition shadow-md"
             >
               <LogIn size={20} /> Login
             </button>
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-200"
+              className="cursor-pointer md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-200"
               onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen); }}
             >
               {menuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -184,7 +203,7 @@ export default function NavbarNoAcc() {
                 setShowLogin(true);
                 setMenuOpen(false);
               }}
-              className="mt-6 w-full flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-bold transition"
+              className="cursor-pointer mt-6 w-full flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-bold transition"
             >
               <LogIn size={24} /> Login
             </button>
@@ -200,10 +219,60 @@ export default function NavbarNoAcc() {
             onClick={() => setShowLogin(false)}
           />
           <div className="relative w-full max-w-sm animate-in zoom-in-95 duration-200">
-            <LoginForm onClose={() => setShowLogin(false)} />
+            <LoginForm
+              onClose={() => setShowLogin(false)}
+              onForgotPassword={() => {
+                setShowLogin(false);
+                setForgotOpen(true);
+              }}
+              onSignUp={() => {          // ← add
+                setShowLogin(false);
+                setShowSignup(true);
+              }}
+            />
           </div>
         </div>
       )}
+      {showSignup && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            onClick={() => setShowSignup(false)}
+          />
+          <div className="relative w-full max-w-sm animate-in zoom-in-95 duration-200">
+            <RegisterForm
+              onSubmit={handleRegister}
+              isLoading={isRegistering}
+              onClose={() => setShowSignup(false)}
+              onSignIn={() => {          // ← add (optional, to go back to login)
+                setShowSignup(false);
+                setShowLogin(true);
+              }}
+            />
+          </div>
+        </div>
+      )}
+      {/* {showLogin && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            onClick={() => setShowLogin(false)}
+          />
+          <div className="relative w-full max-w-sm animate-in zoom-in-95 duration-200">
+            <LoginForm
+              onClose={() => setShowLogin(false)}
+              onForgotPassword={() => {       // ← add this
+                setShowLogin(false);
+                setForgotOpen(true);
+              }}
+            />
+          </div>
+        </div>
+        )} */}
+        <AuthFlowModal                          // ← add this
+        open={forgotOpen}
+        onClose={() => setForgotOpen(false)}
+      />
     </>
   );
 }

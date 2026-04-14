@@ -17,7 +17,7 @@ const navItems = [
   { label: "Create Course", icon: BookOpen,         href: "/dashboard/teacher/create-course" },
   { label: "Add Lesson",    icon: PenLine,          href: "/dashboard/teacher/lessons" },
   { label: "Add Book",      icon: BookMarked,       href: "/dashboard/teacher/create-book" },
-  { label: "My Favourite",  icon: Heart,            href: "/dashboard/teacher/courses" },
+  { label: "My Favourite",  icon: Heart,            href: "/dashboard/teacher/favourites" },
   { label: "Profile",       icon: UserCircle,       href: "/dashboard/teacher/profile" },
 ];
 

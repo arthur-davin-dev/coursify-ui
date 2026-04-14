@@ -347,7 +347,7 @@ export default function Navbar() {
         <ul className="hidden md:flex gap-8">
           {navLinks.map((item) => (
             <li key={item.label}>
-              <Link href={item.href} className="text-[#2D368E] dark:text-gray-200 hover:text-blue-600 transition font-bold uppercase text-sm tracking-wider">
+              <Link href={item.href} className="text-[#2D368E] dark:text-gray-200 font-bold hover:text-blue-700 dark:hover:text-blue-400 transition text-base lg:text-lg uppercase">
                 {item.label}
               </Link>
             </li>

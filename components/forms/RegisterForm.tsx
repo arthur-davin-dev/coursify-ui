@@ -4,9 +4,15 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
-  Mail, Lock, User, GraduationCap,
-  School, Loader2, ArrowRight
+  Mail,
+  Lock,
+  User,
+  GraduationCap,
+  School,
+  Loader2,
+  ArrowRight,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const registerSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -23,6 +29,9 @@ export type RegisterFormData = z.infer<typeof registerSchema>;
 interface RegisterFormProps {
   onSubmit: (data: RegisterFormData) => void;
   isLoading: boolean;
+  onClose?: () => void;
+  onSignIn?: () => void;
+  
 }
 
 // Reusable input wrapper
@@ -46,7 +55,13 @@ function InputField({
   );
 }
 
-export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
+export function RegisterForm({
+  onSubmit,
+  isLoading,
+  onClose,
+  onSignIn,
+}: RegisterFormProps) {
+  const router = useRouter();
   const {
     control,
     handleSubmit,
@@ -68,15 +83,39 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
     "w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-900 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 text-sm";
 
   return (
-    <div className="w-full max-w-[420px] bg-white dark:bg-gray-950 rounded-[2.5rem] p-8 shadow-2xl border border-gray-100 dark:border-gray-800">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+    <div className="w-full max-w-[440px] bg-white dark:bg-[#242B4D] rounded-[2.5rem] p-8 shadow-2xl border border-gray-100 dark:border-gray-800">
+      <div className="px-8 pt-6">
+        <button
+          type="button"
+          onClick={() => (onClose ? onClose() : router.back())}
+          className="cursor-pointer text-slate-500 dark:text-gray-400 hover:text-slate-700 dark:hover:text-white transition-colors p-2 -ml-2"
+          aria-label="Go back"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            className="size-5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+            />
+          </svg>
+        </button>
+      </div>
+      <div className="px-8 pt-2 pb-6 text-center">
+        <h2 className="text-2xl font-extrabold tracking-widest text-slate-800 dark:text-white uppercase">
           Create Account
         </h2>
+        <p className="text-slate-500 dark:text-gray-400 text-sm mt-1">
+          Join us today and start learning
+        </p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
         {/* Role Toggle */}
         <Controller
           name="role"
@@ -88,13 +127,17 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
                   key={r}
                   type="button"
                   onClick={() => field.onChange(r)}
-                  className={`py-3 rounded-2xl border-2 flex items-center justify-center gap-2 transition-all text-sm font-medium ${
+                  className={`cursor-pointer py-3 rounded-2xl border-2 flex items-center justify-center gap-2 transition-all text-sm font-medium ${
                     field.value === r
                       ? "border-blue-600 bg-blue-50 text-blue-600"
                       : "border-gray-100 text-gray-400"
                   }`}
                 >
-                  {r === "STUDENT" ? <GraduationCap size={18} /> : <School size={18} />}
+                  {r === "STUDENT" ? (
+                    <GraduationCap size={18} />
+                  ) : (
+                    <School size={18} />
+                  )}
                   {r.charAt(0) + r.slice(1).toLowerCase()}
                 </button>
               ))}
@@ -117,7 +160,9 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
               )}
             />
             {errors.firstName && (
-              <p className="text-red-500 text-xs mt-1 pl-1">{errors.firstName.message}</p>
+              <p className="text-red-500 text-xs mt-1 pl-1">
+                {errors.firstName.message}
+              </p>
             )}
           </div>
           <div>
@@ -133,7 +178,9 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
               )}
             />
             {errors.lastName && (
-              <p className="text-red-500 text-xs mt-1 pl-1">{errors.lastName.message}</p>
+              <p className="text-red-500 text-xs mt-1 pl-1">
+                {errors.lastName.message}
+              </p>
             )}
           </div>
         </div>
@@ -155,7 +202,12 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
             name="email"
             control={control}
             render={({ field }) => (
-              <input {...field} type="email" placeholder="Email Address" className={inputClass} />
+              <input
+                {...field}
+                type="email"
+                placeholder="Email Address"
+                className={inputClass}
+              />
             )}
           />
         </InputField>
@@ -166,7 +218,12 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
             name="password"
             control={control}
             render={({ field }) => (
-              <input {...field} type="password" placeholder="Password" className={inputClass} />
+              <input
+                {...field}
+                type="password"
+                placeholder="Password"
+                className={inputClass}
+              />
             )}
           />
         </InputField>
@@ -182,7 +239,7 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
                   key={g}
                   type="button"
                   onClick={() => field.onChange(g)}
-                  className={`py-3 rounded-2xl border-2 text-sm font-medium transition-all ${
+                  className={`cursor-pointer py-3 rounded-2xl border-2 text-sm font-medium transition-all ${
                     field.value === g
                       ? "border-blue-600 bg-blue-50 text-blue-600"
                       : "border-gray-100 text-gray-400"
@@ -198,14 +255,33 @@ export function RegisterForm({ onSubmit, isLoading }: RegisterFormProps) {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl hover:bg-blue-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+          className="cursor-pointer w-full bg-blue-600 text-white font-bold py-4 rounded-2xl hover:bg-blue-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
         >
           {isLoading ? (
             <Loader2 className="animate-spin" size={18} />
           ) : (
-            <>Register <ArrowRight size={18} /></>
+            <>
+              Register <ArrowRight size={18} />
+            </>
           )}
         </button>
+        <p className="text-center text-sm text-slate-500 dark:text-gray-400 pt-2">
+          Already have an account?{" "}
+          <button
+            type="button"
+            onClick={() => {
+              if (onSignIn) {
+                onSignIn(); // ← opens login modal
+              } else {
+                onClose?.();
+                router.push("/login");
+              }
+            }}
+            className="cursor-pointer text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            Sign in
+          </button>
+        </p>
       </form>
     </div>
   );

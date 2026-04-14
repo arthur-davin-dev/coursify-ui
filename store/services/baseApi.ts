@@ -29,6 +29,6 @@ export const baseApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Course", "Book", "Category", "User","Enrollment","BookmarkBooks","BookmarkCourses"],
+  tagTypes: ["Course", "Book", "Category", "User","Enrollment","BookmarkBooks","BookmarkCourses","Progress"],
   endpoints: () => ({}),
 });

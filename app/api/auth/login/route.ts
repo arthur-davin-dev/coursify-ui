@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
   });
 
   const data = await response.json();
-  console.log("Java login response:", JSON.stringify(data, null, 2)); // ✅ check terminal
+  console.log("Java login response:", JSON.stringify(data, null, 2));
 
   return NextResponse.json(data, { status: response.status });
 }

@@ -481,12 +481,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCreateBookMutation, useUpdateBookMutation } from "@/store/services/bookApi";
 import type { Book } from "@/store/services/bookApi";
-import { useGetCategoriesQuery } from "@/store/features/categories/categoriesApi";
 import { toast } from "sonner";
 import {
   BookMarked, Paperclip, ImageIcon, ChevronDown,
   CheckCircle2, ChevronRight, Loader2, ArrowRight, Circle, FileText, X,
 } from "lucide-react";
+import { useGetCategoriesQuery } from "@/store/services/categoryApi";
 
 const MAX_THUMBNAIL_MB = 5;
 const MAX_THUMB_BYTES  = MAX_THUMBNAIL_MB * 1024 * 1024;

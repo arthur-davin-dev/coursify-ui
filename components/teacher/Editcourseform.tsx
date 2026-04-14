@@ -18,11 +18,11 @@ import {
   Check,
 } from "lucide-react";
 import Link from "next/link";
-import { useGetCategoriesQuery } from "@/store/features/categories/categoriesApi";
 import {
   useGetCourseByIdQuery,
   useUpdateCourseMutation,
 } from "@/store/services/courseApi";
+import { useGetCategoriesQuery } from "@/store/services/categoryApi";
 
 const DEFAULT_TAGS = [
   "JavaScript",

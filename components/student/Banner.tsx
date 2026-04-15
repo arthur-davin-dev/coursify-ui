@@ -5,22 +5,32 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { useGetUserInfoQuery } from "@/store/features/users/userSlice";
 import { useGetMyEnrolledCoursesQuery } from "@/store/services/enrollmentApi";
-
+import { useGetMyProgressQuery } from "@/store/services/progressApi";
 
 export default function Banner() {
   const token = useSelector((s: RootState) => s.auth.token);
   const { data: user } = useGetUserInfoQuery(undefined, { skip: !token });
 
   const { data: enrolled, isLoading: loadingEnrolled } = useGetMyEnrolledCoursesQuery();
+  const { data: allProgress = [], isLoading: loadingProgress } = useGetMyProgressQuery();
 
   // ── Counts ────────────────────────────────────────────────────────────────
   const enrolledList = Array.isArray(enrolled)
     ? enrolled
     : (enrolled as any)?.content ?? [];
 
-  const totalEnrolled  = enrolledList.length;
-  const totalCompleted = enrolledList.filter((c: any) => c.progress === 100 || c.completed).length;
+  const progressMap = new Map<number, number>(
+    allProgress.map((p: any) => [Number(p.courseId), p.progressPercent ?? 0])
+  );
+
+  const totalEnrolled   = enrolledList.length;
+  const totalCompleted  = enrolledList.filter((c: any) => {
+    const realProgress = progressMap.get(Number(c.id)) ?? c.progress ?? 0;
+    return c.completed || realProgress >= 100;
+  }).length;
   const totalInProgress = totalEnrolled - totalCompleted;
+
+  const isLoading = loadingEnrolled || loadingProgress;
 
   const displayName = user
     ? `${user.firstName} ${user.lastName}`.trim()
@@ -30,7 +40,7 @@ export default function Banner() {
     {
       label:   "Enrolled",
       value:   totalEnrolled,
-      loading: loadingEnrolled,
+      loading: isLoading,
       icon:    BookOpen,
       bg:      "bg-indigo-50 dark:bg-indigo-950",
       iconBg:  "bg-indigo-500 dark:bg-indigo-600",
@@ -39,7 +49,7 @@ export default function Banner() {
     {
       label:   "In Progress",
       value:   totalInProgress,
-      loading: loadingEnrolled,
+      loading: isLoading,
       icon:    Clock,
       bg:      "bg-amber-50 dark:bg-amber-950",
       iconBg:  "bg-amber-400 dark:bg-amber-500",
@@ -48,7 +58,7 @@ export default function Banner() {
     {
       label:   "Completed",
       value:   totalCompleted,
-      loading: loadingEnrolled,
+      loading: isLoading,
       icon:    CheckCircle,
       bg:      "bg-emerald-50 dark:bg-emerald-950",
       iconBg:  "bg-emerald-400 dark:bg-emerald-500",

@@ -81,7 +81,6 @@
 //   useGetEnrollmentsByCourseQuery,
 // } = enrollmentApi;
 
-
 import { baseApi } from "./baseApi";
 import { Course } from "./courseApi"; // Assuming Course type is exported from there
 
@@ -121,16 +120,21 @@ const enrollmentApi = baseApi.injectEndpoints({
     // Detailed view specifically for enrolled students (includes video URLs, etc.)
     getEnrolledCourseDetail: builder.query<Course, number>({
       query: (courseId) => `/enrollments/course/${courseId}/detail`,
-      providesTags: (_result, _error, id) => [{ type: "Course", id }, "Enrollment"],
+      providesTags: (_result, _error, id) => [
+        { type: "Course", id },
+        "Enrollment",
+      ],
     }),
 
     getMyEnrolledCourses: builder.query<EnrolledCourse[], void>({
       query: () => "/enrollments/my",
-      transformResponse: (response: Enrollment[] | { content: Enrollment[] }) => {
+      transformResponse: (
+        response: Enrollment[] | { content: Enrollment[] },
+      ) => {
         const list = Array.isArray(response)
           ? response
-          : (response as any)?.content ?? [];
-          
+          : ((response as any)?.content ?? []);
+
         return list.map((e: Enrollment) => ({
           id: e.courseId,
           title: e.courseTitle,
@@ -169,6 +173,9 @@ const enrollmentApi = baseApi.injectEndpoints({
       query: (courseId) => `/enrollments/courses/${courseId}`,
       providesTags: ["Enrollment"],
     }),
+    getTeacherStats: builder.query<{ totalEnrollments: number }, void>({
+      query: () => "/enrollments/teacher/stats",
+    }),
   }),
   overrideExisting: true,
 });
@@ -181,4 +188,5 @@ export const {
   useCancelEnrollmentMutation,
   useIsEnrolledQuery,
   useGetEnrollmentsByCourseQuery,
+  useGetTeacherStatsQuery,
 } = enrollmentApi;

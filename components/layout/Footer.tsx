@@ -31,7 +31,7 @@ const Footer = () => {
 
           {/* ISTAD */}
           <div className="flex flex-col items-center text-center">
-            <h4 className="text-[24px] font-semibold text-[#2D368E] dark:text-gray-500 mb-5 uppercase tracking-widest">
+            <h4 className="text-[24px] font-semibold text-[#2D368E] dark:text-gray-200 mb-5 uppercase tracking-widest">
               Organized by
             </h4>
             <img
@@ -48,7 +48,7 @@ const Footer = () => {
 
           {/* Brand */}
           <div className="flex flex-col items-center text-center">
-            <h4 className="text-[24px] font-semibold text-[#2D368E] dark:text-gray-500 mb-5 uppercase tracking-widest">
+            <h4 className="text-[24px] font-semibold text-[#2D368E] dark:text-gray-200 mb-5 uppercase tracking-widest">
               Coursify
             </h4>
 
@@ -69,7 +69,7 @@ const Footer = () => {
 
           {/* Links */}
           <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
-            <h3 className="text-[24px] font-semibold text-[#2D368E] dark:text-gray-500 mb-5 uppercase tracking-widest">
+            <h3 className="text-[24px] font-semibold text-[#2D368E] dark:text-gray-200 mb-5 uppercase tracking-widest">
               Explore
             </h3>
             <ul className="flex flex-col gap-4 text-[18px] text-gray-500 dark:text-gray-400">
@@ -102,7 +102,7 @@ const Footer = () => {
 
           {/* Contact */}
           <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
-            <h3 className="text-[24px] font-semibold text-[#2D368E] dark:text-gray-500 mb-5 uppercase tracking-widest">
+            <h3 className="text-[24px] font-semibold text-[#2D368E] dark:text-gray-200 mb-5 uppercase tracking-widest">
               Contact Us
             </h3>
 

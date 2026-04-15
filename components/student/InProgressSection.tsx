@@ -1,16 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { Loader2, PlayCircle, ChevronRight } from "lucide-react";
+import { PlayCircle, ChevronRight } from "lucide-react";
 import { useGetMyEnrolledCoursesQuery } from "@/store/services/enrollmentApi";
-
+import { useGetMyProgressQuery } from "@/store/services/progressApi";
 
 export default function InProgressCourses() {
   const { data: enrolled, isLoading } = useGetMyEnrolledCoursesQuery();
+  const { data: allProgress = [] } = useGetMyProgressQuery();
+
+  const progressMap = new Map<number, number>(
+    allProgress.map((p: any) => [Number(p.courseId), p.progressPercent ?? 0])
+  );
 
   const courses = (
     Array.isArray(enrolled) ? enrolled : (enrolled as any)?.content ?? []
-  ).filter((c: any) => c.progress !== 100 && !c.completed);
+  ).map((c: any) => ({
+    ...c,
+    realProgress: progressMap.get(Number(c.id)) ?? c.progress ?? 0,
+  })).filter((c: any) => c.realProgress < 100 && !c.completed);
 
   return (
     <div className="mb-8">
@@ -45,7 +53,7 @@ export default function InProgressCourses() {
       ) : (
         <div className="flex flex-col gap-3">
           {courses.map((course: any) => {
-            const progress = course.progress ?? 0;
+            const progress = course.realProgress ?? 0;
             return (
               <Link
                 key={course.id}

@@ -2,11 +2,16 @@
 import { useParams } from "next/navigation";
 import { useGetCourseByIdQuery } from "@/store/services/courseApi";
 import CourseDetail from "@/components/course/CourseDetail";
-// import CourseDetail from "@/components/CourseDetail";
+// Swap this import for whatever auth hook your project uses
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+
 
 export default function CourseDetailPage() {
-  const { id } = useParams();
+const { id } = useParams();
   const { data: course, isLoading, isError } = useGetCourseByIdQuery(Number(id));
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+
 
   if (isLoading) {
     return (
@@ -47,5 +52,5 @@ export default function CourseDetailPage() {
     );
   }
 
-  return <CourseDetail course={course} />;
+  return <CourseDetail course={course} isAuthenticated={isAuthenticated} />;
 }

@@ -186,7 +186,7 @@ export default function CreateCourseForm() {
     try {
       await createCourse(payload).unwrap();
       setSaved(true);
-      setTimeout(() => router.push("/teacher/dashboard"), 1200);
+      setTimeout(() => router.push("/dashboard/teacher/courses"), 1200);
     } catch (err: any) {
       const detail = err?.data?.detail;
       let msg = "Failed to create course.";

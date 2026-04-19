@@ -836,7 +836,7 @@ export default function CreateBookForm({
       } else {
         await createBook(payload).unwrap();
         toast.success("Book published!");
-        router.push("/library");
+        router.push("/dashboard/teacher/books");
       }
     } catch (err: any) {
       const msg = err?.data?.message || err?.data?.detail || err?.message || "Failed to save book.";

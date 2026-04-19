@@ -14,7 +14,7 @@ export default function Banner() {
   const { data: enrolled, isLoading: loadingEnrolled } = useGetMyEnrolledCoursesQuery();
   const { data: allProgress = [], isLoading: loadingProgress } = useGetMyProgressQuery();
 
-  // ── Counts ────────────────────────────────────────────────────────────────
+  // ── Logic ────────────────────────────────────────────────────────────────
   const enrolledList = Array.isArray(enrolled)
     ? enrolled
     : (enrolled as any)?.content ?? [];
@@ -23,8 +23,8 @@ export default function Banner() {
     allProgress.map((p: any) => [Number(p.courseId), p.progressPercent ?? 0])
   );
 
-  const totalEnrolled   = enrolledList.length;
-  const totalCompleted  = enrolledList.filter((c: any) => {
+  const totalEnrolled = enrolledList.length;
+  const totalCompleted = enrolledList.filter((c: any) => {
     const realProgress = progressMap.get(Number(c.id)) ?? c.progress ?? 0;
     return c.completed || realProgress >= 100;
   }).length;
@@ -38,62 +38,67 @@ export default function Banner() {
 
   const stats = [
     {
-      label:   "Enrolled",
-      value:   totalEnrolled,
+      label: "Enrolled",
+      value: totalEnrolled,
       loading: isLoading,
-      icon:    BookOpen,
-      bg:      "bg-indigo-50 dark:bg-indigo-950",
-      iconBg:  "bg-indigo-500 dark:bg-indigo-600",
-      text:    "text-indigo-600 dark:text-indigo-400",
+      icon: BookOpen,
+      bg: "bg-indigo-50/50 dark:bg-indigo-950/30",
+      iconBg: "bg-indigo-500",
+      text: "text-indigo-600 dark:text-indigo-400",
     },
     {
-      label:   "In Progress",
-      value:   totalInProgress,
+      label: "In Progress",
+      value: totalInProgress,
       loading: isLoading,
-      icon:    Clock,
-      bg:      "bg-amber-50 dark:bg-amber-950",
-      iconBg:  "bg-amber-400 dark:bg-amber-500",
-      text:    "text-amber-500 dark:text-amber-400",
+      icon: Clock,
+      bg: "bg-amber-50/50 dark:bg-amber-950/30",
+      iconBg: "bg-amber-500",
+      text: "text-amber-600 dark:text-amber-400",
     },
     {
-      label:   "Completed",
-      value:   totalCompleted,
+      label: "Completed",
+      value: totalCompleted,
       loading: isLoading,
-      icon:    CheckCircle,
-      bg:      "bg-emerald-50 dark:bg-emerald-950",
-      iconBg:  "bg-emerald-400 dark:bg-emerald-500",
-      text:    "text-emerald-500 dark:text-emerald-400",
+      icon: CheckCircle,
+      bg: "bg-emerald-50/50 dark:bg-emerald-950/30",
+      iconBg: "bg-emerald-500",
+      text: "text-emerald-600 dark:text-emerald-400",
     },
   ];
 
   return (
-    <div className="mb-8">
-      <div className="mb-6">
-        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100">
-          Welcome,{" "}
-          <span className="text-indigo-700 dark:text-indigo-400">{displayName}</span>!
+    <div className="mb-8 px-4 sm:px-0">
+      <div className="mb-8">
+        <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">
+          Welcome back,{" "}
+          <span className="text-indigo-600 dark:text-indigo-400">{displayName}</span>!
         </h1>
-        <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">Student Dashboard</p>
+        <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">
+          Here&apos;s what&apos;s happening with your courses today.
+        </p>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      {/* Responsive Grid: 1 column on mobile, 3 on medium screens and up */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
         {stats.map(({ label, value, loading, icon: Icon, bg, iconBg, text }) => (
           <div
             key={label}
-            className={`${bg} rounded-2xl px-6 py-5 flex items-center gap-4 shadow-sm transition-colors duration-300`}
+            className={`${bg} border border-transparent dark:border-gray-800 rounded-2xl p-5 md:p-6 flex items-center gap-4 shadow-sm hover:shadow-md transition-all duration-200`}
           >
-            <div className={`${iconBg} w-11 h-11 rounded-xl flex items-center justify-center shadow`}>
-              <Icon size={20} className="text-white" />
+            <div className={`${iconBg} shrink-0 w-12 h-12 rounded-xl flex items-center justify-center shadow-lg shadow-black/5`}>
+              <Icon size={24} className="text-white" />
             </div>
-            <div>
+            <div className="flex flex-col">
               {loading ? (
-                <Loader2 size={20} className={`animate-spin ${text} mb-0.5`} />
+                <Loader2 size={24} className={`animate-spin ${text} mb-1`} />
               ) : (
-                <p className={`text-2xl font-extrabold ${text}`}>
+                <span className={`text-2xl font-bold leading-none ${text}`}>
                   {Number(value).toLocaleString()}
-                </p>
+                </span>
               )}
-              <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{label}</p>
+              <span className="text-sm text-gray-600 dark:text-gray-400 font-medium mt-1">
+                {label}
+              </span>
             </div>
           </div>
         ))}

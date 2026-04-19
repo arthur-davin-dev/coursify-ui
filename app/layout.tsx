@@ -36,7 +36,7 @@
 
 
 import type { Metadata } from "next";
-import { Inter,Odor_Mean_Chey } from "next/font/google";
+import { Inter,Odor_Mean_Chey, Moul, Kantumruy_Pro } from "next/font/google";
 import "./globals.css";
 import NavbarWrapper from "@/components/layout/NavbarWrapper";
 import Footer from "@/components/layout/Footer";
@@ -57,6 +57,17 @@ const odorMeanChey = Odor_Mean_Chey({
   display: "swap",
 });
 
+const moul = Moul({ 
+  weight: '400', 
+  subsets: ['khmer'], 
+  variable: '--font-moul' 
+});
+
+const kantumruy = Kantumruy_Pro({ 
+  subsets: ['khmer'], 
+  variable: '--font-kantumruy' 
+});
+
 export default function RootLayout({
   children,
 }: {
@@ -64,7 +75,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} ${odorMeanChey.variable} font-sans min-h-screen flex flex-col`}>
+      <body className={`${inter.className} ${odorMeanChey.variable} ${moul.variable} ${kantumruy.variable} font-sans min-h-screen flex flex-col`}>
         <StoreProvider>
           {/* ✅ Wrap everything in the I18nProvider */}
           <I18nProvider> 

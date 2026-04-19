@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect, ChangeEvent } from "react";
 import { baseApi } from "@/store/services/baseApi";
 import { useGetUserInfoQuery, UserInfo } from "@/store/features/users/userSlice";
+import { useGetMyCoursesQuery } from "@/store/services/courseApi";
+import { useGetTeacherStatsQuery } from "@/store/services/enrollmentApi";
 
 // ─── constants ────────────────────────────────────────────────────────────────
 const CLOUDINARY_CLOUD = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!;
@@ -133,6 +135,37 @@ function ProfileSkeleton() {
 
 // ─── main component ───────────────────────────────────────────────────────────
 export default function InstructorProfile() {
+
+  // 1. Fetch real courses created by the instructor
+  const { data: coursesData, isLoading: coursesLoading } = useGetMyCoursesQuery();
+  
+  // 2. Fetch real enrollment count (Teacher Stats)
+  const { data: teacherStats, isLoading: statsLoading } = useGetTeacherStatsQuery();
+
+  // ── Logic ────────────────────────────────────────────────────────────────
+  
+  // Handle if your API returns a raw array or a { content: [] } object
+  const coursesList = Array.isArray(coursesData) 
+    ? coursesData 
+    : (coursesData as any)?.content ?? [];
+
+  const totalCourses = coursesList.length;
+  const totalStudents = teacherStats?.totalEnrollments ?? 0;
+
+  const stats = [
+    { 
+      val: totalCourses.toString(), 
+      lbl: "Courses" 
+    },
+    { 
+      val: totalStudents >= 1000 
+        ? `${(totalStudents / 1000).toFixed(1)}k` 
+        : totalStudents.toString(), 
+      lbl: "Students" 
+    },
+    
+  ];
+
   // ── queries & mutations ──────────────────────────────────────────────────
   const { data: user, isLoading, isError } = useGetUserInfoQuery();
   const [updateProfile, { isLoading: isSaving }] = useUpdateProfileMutation();
@@ -298,7 +331,7 @@ export default function InstructorProfile() {
                         bgImageUrl: "", // your "remove" logic
                     });
                 }}
-                className="absolute top-2.5 right-2.5 px-3 py-1 text-[10px] font-bold uppercase tracking-wider bg-red-500/80 hover:bg-red-600 text-white rounded-lg opacity-0 group-hover/banner:opacity-100 transition-opacity z-20"
+                className="cursor-pointer absolute top-2.5 right-2.5 px-3 py-1 text-[10px] font-bold uppercase tracking-wider bg-red-500/80 hover:bg-red-600 text-white rounded-lg opacity-0 group-hover/banner:opacity-100 transition-opacity z-20"
             >
                 Remove
             </button>
@@ -311,7 +344,7 @@ export default function InstructorProfile() {
           type="button"
           onClick={() => bgRef.current?.click()}
           disabled={isUploadingBg}
-          className="absolute bottom-2.5 right-2.5 flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-black/40 hover:bg-black/60 text-white backdrop-blur-sm transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/50 z-20"
+          className="cursor-pointer absolute bottom-2.5 right-2.5 flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-black/40 hover:bg-black/60 text-white backdrop-blur-sm transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/50 z-20"
           aria-label="Change background photo"
         >
           <ImageIcon />
@@ -334,7 +367,7 @@ export default function InstructorProfile() {
           type="button"
           onClick={() => fileRef.current?.click()}
           disabled={isUploadingAvatar}
-          className="relative w-35 h-35 rounded-full border-4 border-white dark:border-gray-950 bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl font-semibold shrink-0 overflow-hidden group focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-60 shadow-md"
+          className="cursor-pointer relative w-35 h-35 rounded-full border-4 border-white dark:border-gray-950 bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl font-semibold shrink-0 overflow-hidden group focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-60 shadow-md"
           aria-label="Change profile photo"
         >
           {avatarSrc ? (
@@ -371,8 +404,22 @@ export default function InstructorProfile() {
         </div>
       </div>
 
-      {/* ── stats row ── */}
       <div className="grid grid-cols-3 gap-3 mb-5">
+        {stats.map(({ val, lbl }) => (
+          <div
+            key={lbl}
+            className="bg-neutral-50 dark:bg-gray-950 rounded-xl p-3 text-center border border-neutral-100 dark:border-neutral-800 transition-all hover:border-blue-200 dark:hover:border-blue-900"
+          >
+            <p className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+              {val}
+            </p>
+            <p className="text-[11px] text-neutral-400 mt-0.5">{lbl}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* ── stats row ── */}
+      {/* <div className="grid grid-cols-3 gap-3 mb-5">
         {[
           { val: "12", lbl: "Courses" },
           { val: "1.4k", lbl: "Students" },
@@ -386,7 +433,7 @@ export default function InstructorProfile() {
             <p className="text-[11px] text-neutral-400 mt-0.5">{lbl}</p>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* ── basic information ── */}
       <SectionCard title="Basic information">

@@ -119,16 +119,16 @@ const Footer = () => {
             <div className="flex items-center gap-3 mb-6 text-gray-500 dark:text-gray-400 text-[18px]">
               <MdPhone size={20} className="shrink-0" />
               <a
-                href="tel:+85512345678"
+                href="tel:+85581528714"
                 className="hover:text-blue-600 dark:hover:text-blue-400 transition"
               >
-                +855 12 345 678
+                +855 81 528 714
               </a>
             </div>
 
             <div className="flex gap-3">
               <a
-                href="https://web.facebook.com/istad.co"
+                href="https://www.facebook.com/share/1EPJPWtWgp/?mibextid=wwXIfr"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition"
@@ -136,7 +136,7 @@ const Footer = () => {
                 <FaFacebookF size={15} />
               </a>
               <a
-                href="https://t.me/ISTADKH"
+                href="https://t.me/@istadkh"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-sky-500 hover:text-white hover:border-sky-500 transition"
@@ -175,7 +175,7 @@ const Footer = () => {
             Privacy Policy
           </Link>
           <Link
-            href="/terms"
+            href="https://t.me/@istadkh"
             className="hover:text-gray-600 dark:hover:text-gray-300 transition"
           >
             Terms

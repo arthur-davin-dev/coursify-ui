@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class',
+  darkMode: "class",
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -8,12 +8,12 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        // Keeps Inter as the default UI font
-        sans: ["var(--font-inter)", "ui-sans-serif", "system-ui"],
-        // Re-mapping 'font-kh' to Odor Mean Chey
-        kh: ["var(--font-odor)", "serif"], 
+        // These MUST match the variable names set in layout.tsx
+        moul: ["var(--font-moul)", "serif"],
+        kantumruy: ["var(--font-kantumruy)", "sans-serif"],
+        kh: ["var(--font-odor)", "serif"],
       },
     },
   },
   plugins: [],
-}
+};

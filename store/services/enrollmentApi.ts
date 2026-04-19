@@ -126,34 +126,75 @@ const enrollmentApi = baseApi.injectEndpoints({
       ],
     }),
 
+    // getMyEnrolledCourses: builder.query<EnrolledCourse[], void>({
+    //   query: () => "/enrollments/my",
+    //   transformResponse: (
+    //     response: Enrollment[] | { content: Enrollment[] },
+    //   ) => {
+    //     const list = Array.isArray(response)
+    //       ? response
+    //       : ((response as any)?.content ?? []);
+
+    //     return list.map((e: Enrollment) => ({
+    //       id: e.courseId,
+    //       title: e.courseTitle,
+    //       thumbnail: e.courseImageUrl ?? e.thumbnail ?? fallbackUrl,
+    //       instructorName: e.instructorName ?? "Instructor",
+    //       progress: e.progress ?? 0,
+    //       completed: e.completed ?? false,
+    //     }));
+    //   },
+    //   providesTags: ["Enrollment"],
+    // }),
     getMyEnrolledCourses: builder.query<EnrolledCourse[], void>({
       query: () => "/enrollments/my",
-      transformResponse: (
-        response: Enrollment[] | { content: Enrollment[] },
-      ) => {
+      transformResponse: (response: any) => {
         const list = Array.isArray(response)
           ? response
-          : ((response as any)?.content ?? []);
+          : (response?.content ?? []);
 
-        return list.map((e: Enrollment) => ({
-          id: e.courseId,
-          title: e.courseTitle,
-          thumbnail: e.courseImageUrl ?? e.thumbnail ?? fallbackUrl,
-          instructorName: e.instructorName ?? "Instructor",
-          progress: e.progress ?? 0,
+        console.log("🔍 Raw enrollment[0]:", list[0]); // Remove after debugging
+
+        return list.map((e: any) => ({
+          // Handle both camelCase and snake_case from backend
+          id: e.courseId ?? e.course_id ?? e.id,
+          title: e.courseTitle ?? e.course_title ?? e.title ?? "Untitled",
+          thumbnail:
+            e.courseImageUrl ??
+            e.course_image_url ??
+            e.thumbnail ??
+            fallbackUrl,
+          instructorName: e.instructorName ?? e.instructor_name ?? "Instructor",
+          progress: e.progress ?? e.progressPercent ?? 0,
           completed: e.completed ?? false,
         }));
       },
       providesTags: ["Enrollment"],
     }),
 
+    // enrollmentApi.ts
+
     enrollCourse: builder.mutation<Enrollment, number>({
       query: (courseId) => ({
         url: `/enrollments/${courseId}`,
         method: "POST",
       }),
-      // Invalidating "Course" ensures the public view also updates its "isEnrolled" status if applicable
-      invalidatesTags: ["Enrollment", "Course"],
+      // Before: invalidatesTags: ["Enrollment", "Course"],
+      // After ↓ — forces getMyEnrolledCourses AND isEnrolled to both refetch
+      invalidatesTags: (_result, _error, courseId) => [
+        "Enrollment",
+        "Course",
+        { type: "Enrollment", id: courseId },
+        { type: "Course", id: courseId },
+      ],
+      // ✅ Optimistic update — course appears instantly before refetch
+      async onQueryStarted(courseId, { dispatch, queryFulfilled, getState }) {
+        try {
+          const { data: newEnrollment } = await queryFulfilled;
+          // Force immediate refetch of the enrolled courses list
+          dispatch(enrollmentApi.util.invalidateTags(["Enrollment"]));
+        } catch {}
+      },
     }),
 
     cancelEnrollment: builder.mutation<void, number>({

@@ -88,7 +88,7 @@ export default function AllCoursesTable() {
           </div>
           <button
             onClick={() => router.push("/dashboard/teacher/create-course")}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white text-sm font-bold font-inter transition-all hover:-translate-y-0.5 shadow-lg shadow-primary/20"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white text-sm font-bold font-inter transition-all hover:-translate-y-0.5 shadow-lg"
           >
             <Plus size={18} /> New Course
           </button>

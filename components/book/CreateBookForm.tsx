@@ -991,7 +991,7 @@ export default function CreateBookForm({
               Cancel
             </button>
             <button type="submit" disabled={busy}
-              className="flex items-center gap-2 px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-200 active:translate-y-0">
+              className="flex items-center gap-2 px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 cursor-pointer">
               {busy ? (
                 <><Loader2 size={15} className="animate-spin" />{stepLabel || "Saving…"}</>
               ) : (

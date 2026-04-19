@@ -182,7 +182,7 @@ export default function BookDetails() {
 
             <div className="mt-12 pt-8 border-t dark:border-gray-700">
               {/* <BookDetailsPdf fileUrl={book.fileUrl?.replace("http://localhost:8080/api", "/api")} /> */}
-              <BookDetailsPdf fileUrl={book.file_url} />
+              <BookDetailsPdf fileUrl={book.fileUrl} />
             </div>
           </main>
 

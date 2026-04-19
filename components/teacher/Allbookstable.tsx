@@ -283,9 +283,9 @@ export default function AllBooksTable() {
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-end gap-2">
                           {/* View PDF */}
-                          {book.file_url && (
+                          {book.fileUrl && (
                             <a
-                              href={book.file_url}
+                              href={book.fileUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="p-2 rounded-lg hover:bg-amber-500/10 text-amber-500 transition-colors"

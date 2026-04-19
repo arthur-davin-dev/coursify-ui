@@ -9,6 +9,7 @@ import PopularCourse from "@/components/landing/PopularCourse";
 import StudentFeedback from "@/components/landing/StudentFeedBack";
 import TrendingBooks from "@/components/landing/TrendingBooks";
 
+
 export default function Home() {
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-slate-950">
@@ -22,6 +23,7 @@ export default function Home() {
       <HowItWorksSection/>
       <StudentFeedback/>
       <FAQSection/>
+
     </div>
   );
 }

@@ -781,7 +781,7 @@ export default function CreateBookForm({
     setDescription(initialData.description ?? "");
 
     // ✅ Exact field names from your backend response
-    setExistingPdfUrl(initialData.file_url ?? "");
+    setExistingPdfUrl(initialData.fileUrl ?? "");
     setExistingThumbUrl(initialData.thumbnail ?? "");
 
     // ✅ category_ids is number[] — take first element
@@ -824,7 +824,7 @@ export default function CreateBookForm({
       const payload = {
         title:        title.trim(),
         description:  description.trim(),
-        file_url:     pdfUrl,
+        fileUrl:     pdfUrl,
         thumbnail:    thumbUrl,
         category_ids: [categoryId as number],
       };

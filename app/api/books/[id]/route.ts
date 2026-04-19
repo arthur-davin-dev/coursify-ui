@@ -4,10 +4,11 @@ const API = process.env.NEXT_PUBLIC_API;
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
-    const res = await fetch(`${API}/api/books/${params.id}`, {
+    const res = await fetch(`${API}/api/books/${id}`, {
       next: { revalidate: 60 },
     });
 
@@ -22,8 +23,9 @@ export async function GET(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const authHeader = req.headers.get("authorization");
 
@@ -33,7 +35,7 @@ export async function PATCH(
 
     const body = await req.json();
 
-    const res = await fetch(`${API}/api/books/${params.id}`, {
+    const res = await fetch(`${API}/api/books/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -53,8 +55,9 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const authHeader = req.headers.get("authorization");
 
@@ -62,7 +65,7 @@ export async function DELETE(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const res = await fetch(`${API}/api/books/${params.id}`, {
+    const res = await fetch(`${API}/api/books/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: authHeader,
@@ -73,7 +76,6 @@ export async function DELETE(
       return new NextResponse(null, { status: 204 });
     }
 
-    // some backends return a body on delete errors
     const data = await res.json().catch(() => ({}));
     return NextResponse.json(data, { status: res.status });
   } catch (error) {

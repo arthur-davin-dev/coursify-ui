@@ -20,8 +20,8 @@ export default function BookDetails() {
     const booksList = Array.isArray(allBooksData) ? allBooksData : allBooksData.content || [];
     
     return booksList.filter(
-      (b) => b.id !== book.id && b.categories?.some((c) => book.categories?.includes(c))
-    );
+  (b) => b.id !== book.id && b.categories?.some((c: string) => book.categories?.includes(c))
+);
   }, [book, allBooksData]);
 
   // Loading State with hardcoded dark blue
@@ -33,7 +33,8 @@ export default function BookDetails() {
 
   if (bookError || !book) return <div className="p-10 text-center text-red-500 font-bold">Book not found.</div>;
 
-  const proxiedPdfUrl = book.fileUrl?.replace("http://localhost:8080/api", "/api");
+  // const proxiedPdfUrl = book.fileUrl?.replace("http://localhost:8080/api", "/api");
+  const proxiedPdfUrl = book.file_url;
 
   return (
     /* MAIN BACKGROUND: Hardcoded to #1A1F3A */

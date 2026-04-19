@@ -81,7 +81,7 @@ export default function BannerBook() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
     },
   };
 
@@ -94,7 +94,7 @@ export default function BannerBook() {
       transition: {
         delay: 0.5 + i * 0.1,
         duration: 0.7,
-        ease: "backOut",
+        ease: "backOut" as const,
       },
     }),
   };

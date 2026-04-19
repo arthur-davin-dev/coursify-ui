@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  Check,
 } from "lucide-react";
 import CourseCard from "@/components/course/CourseCard";
 import BannerCourse from "@/components/course/BannerCourse";
@@ -160,7 +161,7 @@ export default function CoursePage() {
                       key={cat.id}
                       label={cat.name}
                       active={selectedCategoryId === cat.id}
-                      onClick={() => handleSelectCategory(cat.id)}
+                      onClick={() => handleSelectCategory(Number(cat.id))}
                     />
                   ))}
                 </motion.div>
@@ -181,7 +182,7 @@ export default function CoursePage() {
               key={cat.id}
               label={cat.name}
               active={selectedCategoryId === cat.id}
-              onClick={() => handleSelectCategory(cat.id)}
+              onClick={() => handleSelectCategory(Number(cat.id))}
             />
           ))}
         </div>

@@ -104,6 +104,8 @@
 // }
 
 "use client";
+
+import { useRouter } from "next/navigation";
 import { Bookmark, Clock, BookOpen } from "lucide-react";
 import Link from "next/link";
 import type { Course } from "@/store/services/courseApi";
@@ -114,6 +116,8 @@ import {
 } from "@/store/services/bookmarkApi";
 
 export default function CourseCard({ course }: { course: Course }) {
+  const router = useRouter();
+
   const { data: checkData } = useCheckCourseBookmarkQuery(String(course.id));
   const isSaved = checkData?.bookmarked ?? false;
 
@@ -123,6 +127,7 @@ export default function CourseCard({ course }: { course: Course }) {
   const handleBookmark = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
     try {
       if (isSaved) {
         await removeBookmarkCourse(String(course.id)).unwrap();
@@ -132,6 +137,10 @@ export default function CourseCard({ course }: { course: Course }) {
     } catch (err) {
       console.error("Bookmark error:", err);
     }
+  };
+
+  const goToCourse = () => {
+    router.push(`/courses/${course.id}`);
   };
 
   const thumbnailSrc =
@@ -144,8 +153,8 @@ export default function CourseCard({ course }: { course: Course }) {
   const teacherInitial = course.teacherName?.charAt(0).toUpperCase() ?? "T";
 
   return (
-    <Link
-      href={`/courses/${course.id}`}
+    <div
+      onClick={goToCourse}
       className="flex flex-col h-full group w-full bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer"
     >
       {/* Thumbnail */}
@@ -186,7 +195,8 @@ export default function CourseCard({ course }: { course: Course }) {
 
         {/* Footer */}
         <div className="border-t border-gray-100 dark:border-gray-700 pt-4 flex items-center justify-between mt-auto gap-3">
-          {/* Teacher — links to profile */}
+          
+          {/* Teacher link (SAFE - no nesting issue) */}
           <Link
             href={`/profile/${course.teacherId}`}
             onClick={(e) => e.stopPropagation()}
@@ -210,7 +220,7 @@ export default function CourseCard({ course }: { course: Course }) {
             </span>
           </Link>
 
-          {/* Right: duration + lesson count */}
+          {/* Meta */}
           <div className="flex items-center gap-2 shrink-0">
             {course.duration && (
               <span className="flex items-center gap-1 text-xs font-semibold text-gray-400 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 px-3 py-1.5 rounded-full">
@@ -225,6 +235,6 @@ export default function CourseCard({ course }: { course: Course }) {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

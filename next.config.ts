@@ -4,6 +4,7 @@ const nextConfig = {
       {
         source: "/api/:path*",
         destination: "https://api-coursify.onrender.com/api/:path*",
+        // destination: "http://localhost:8080/api/:path*",
       },
     ];
   },

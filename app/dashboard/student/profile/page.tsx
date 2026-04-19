@@ -1,6 +1,5 @@
 import StudentProfile from '@/components/student/StudentProfile'
-import React from 'react'
 
-export default function page() {
+export default function ProfilePage() {
   return <StudentProfile/>
 }

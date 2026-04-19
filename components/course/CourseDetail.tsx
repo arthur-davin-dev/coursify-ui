@@ -17,6 +17,7 @@ import {
   useIsEnrolledQuery,
 } from "@/store/services/enrollmentApi";
 import { useGetTeacherInfoQuery } from "@/store/features/users/userSlice";
+import Link from "next/link";
 function UserAvatar({
   imageUrl,
   name,
@@ -263,7 +264,7 @@ function LessonItem({ number, lesson }: { number: number; lesson: Lesson }) {
             )}
           </div>
         </div>
-        <a
+        <Link
           href={lesson.video_url}
           target="_blank"
           rel="noopener noreferrer"
@@ -271,7 +272,7 @@ function LessonItem({ number, lesson }: { number: number; lesson: Lesson }) {
           className="flex items-center gap-1 text-blue-400 hover:text-blue-600 transition shrink-0 ml-2"
         >
           <Video size={16} />
-        </a>
+        </Link>
       </div>
     </div>
   );

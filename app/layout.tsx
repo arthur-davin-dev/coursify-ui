@@ -47,29 +47,55 @@ import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Coursify - Learn Anytime, Anywhere",
-  description: "Online learning platform for students and teachers in Cambodia.",
-  keywords: ["online learning", "courses", "education", "Cambodia", "e-learning Khmer"],
+  metadataBase: new URL("https://cousify.vercel.app"),
+
+  title: {
+    default: "Coursify | Learn Skills Online",
+    template: "%s | Coursify",
+  },
+
+  description:
+    "Coursify is an online learning platform to explore courses in programming, design, and technology. Learn anytime, anywhere.",
+
+  keywords: [
+    "online courses",
+    "e-learning platform",
+    "learn programming",
+    "web development Cambodia",
+    "IT courses",
+    "Coursify"
+  ],
+
+  authors: [{ name: "Coursify Team" }],
+  creator: "Coursify",
+
   openGraph: {
-    title: "Coursify - Learn Anytime",
-    description: "Best e-learning platform in Cambodia",
+    title: "Coursify | Learn Skills Online",
+    description:
+      "Join Coursify to learn programming, design, and tech skills from anywhere.",
     url: "https://cousify.vercel.app",
     siteName: "Coursify",
     images: [
       {
-        url: "https://api-coursify.onrender.com:443/api/files/general/c8126f0e-93cb-4b09-a744-a89fef2b8d40.png", // Use full URL for reliability
+        url: "/thumbnail.jpg", // put inside public folder
         width: 1200,
         height: 630,
         alt: "Coursify Learning Platform",
       },
     ],
+    locale: "en_US",
     type: "website",
   },
+
   twitter: {
     card: "summary_large_image",
     title: "Coursify",
-    description: "Learn online easily",
-    images: ["https://api-coursify.onrender.com:443/api/files/general/c8126f0e-93cb-4b09-a744-a89fef2b8d40.png"],
+    description: "Learn programming and tech skills online",
+    images: ["/thumbnail.jpg"],
+  },
+
+  icons: {
+    icon: "/favicon.ico",
   },
 };
 

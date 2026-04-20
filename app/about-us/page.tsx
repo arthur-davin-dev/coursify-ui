@@ -134,7 +134,7 @@ const AboutUs = () => {
             alt="Hero Background"
             className="w-full h-full object-cover brightness-[0.4] dark:brightness-[0.15]"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 dark:via-[#020617]/50 to-gray-100 dark:to-[#020617]"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 dark:via-[#020617]/10 to-gray-100 dark:to-[#020617]"></div>
         </motion.div>
         <div className="relative z-10 text-center px-4 max-w-4xl">
           <motion.h1

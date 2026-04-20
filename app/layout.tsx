@@ -60,6 +60,10 @@ export const metadata: Metadata = {
   },
 
   category: "education",
+
+  verification: {
+    google: "jtTKWpNt9U1Qd124cT2ScI5ERuT7t6Rk6NX1GOvAjsg",
+  },
 };
 
 const odorMeanChey = Odor_Mean_Chey({

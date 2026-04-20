@@ -774,22 +774,15 @@ export default function CreateBookForm({
   // undefined and the dropdown shows the placeholder instead of the real value.
   // Adding `categories` here means the effect re-runs once categories load,
   // and setCategoryId(firstCatId) correctly matches an option in the list.
-  useEffect(() => {
-    if (!initialData) return;
-
-    setTitle(initialData.title ?? "");
-    setDescription(initialData.description ?? "");
-
-    // ✅ Exact field names from your backend response
-    setExistingPdfUrl(initialData.fileUrl ?? "");
-    setExistingThumbUrl(initialData.thumbnail ?? "");
-
-    // ✅ category_ids is number[] — take first element
-    const firstCatId = initialData.category_ids?.[0];
-    if (firstCatId !== undefined) {
-      setCategoryId(firstCatId);
-    }
-  }, [initialData, categories]); // ← categories here is the fix
+useEffect(() => {
+  if (!initialData) return;
+  setTitle(initialData.title ?? "");
+  setDescription(initialData.description ?? "");
+  setExistingPdfUrl(initialData.fileUrl ?? "");      // camelCase
+  setExistingThumbUrl(initialData.thumbnail ?? "");
+  const firstCatId = initialData.category_ids?.[0];
+  if (firstCatId !== undefined) setCategoryId(firstCatId);
+}, [initialData, categories]);
 
   // ── Submit ─────────────────────────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {
@@ -824,7 +817,7 @@ export default function CreateBookForm({
       const payload = {
         title:        title.trim(),
         description:  description.trim(),
-        fileUrl:     pdfUrl,
+        file_url:     pdfUrl,
         thumbnail:    thumbUrl,
         category_ids: [categoryId as number],
       };

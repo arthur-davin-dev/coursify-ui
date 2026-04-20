@@ -4,7 +4,7 @@
 // //   id: number;
 // //   title: string;
 // //   description: string;
-// //   fileUrl: string;
+// //   file_url: string;
 // //   thumbnail: string;
 // //   uploadedById?: number;
 // //   uploadedByName?: string;
@@ -47,7 +47,7 @@
 //   id: number;
 //   title: string;
 //   description: string;
-//   fileUrl: string;
+//   file_url: string;
 //   thumbnail: string;
 //   uploadedById?: number;
 //   uploadedByName?: string;
@@ -85,7 +85,7 @@ export type Book = {
   id: number;
   title: string;
   description: string;
-  fileUrl: string; 
+  fileUrl: string;
   thumbnail: string;
   uploadedById?: number;
   uploadedByName?: string;
@@ -106,7 +106,7 @@ export type BookResponse = {
 export interface CreateBookPayload {
   title: string;
   description: string;
-  fileUrl: string; 
+  file_url: string;
   thumbnail: string;
   category_ids: number[];
 }

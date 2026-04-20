@@ -61,8 +61,8 @@ export default function BookDetails() {
       </div>
     );
 
-  // const proxiedPdfUrl = book.fileUrl?.replace("http://localhost:8080/api", "/api");
-  // const proxiedPdfUrl = book.fileUrl;
+  // const proxiedPdfUrl = book.file_url?.replace("http://localhost:8080/api", "/api");
+  // const proxiedPdfUrl = book.file_url;
   const proxiedPdfUrl = book!.fileUrl; // ✅ no more type error
 
   return (
@@ -124,7 +124,7 @@ export default function BookDetails() {
 
             {/* PDF Viewer */}
             <div className="rounded-xl overflow-hidden shadow-inner">
-              <BookDetailsPdf fileUrl={proxiedPdfUrl} />
+              <BookDetailsPdf file_url={proxiedPdfUrl} />
             </div>
           </main>
 

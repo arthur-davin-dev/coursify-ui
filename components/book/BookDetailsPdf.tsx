@@ -8,13 +8,10 @@ import { ImSpinner2 } from "react-icons/im";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
-/**
- * FIX: Using unpkg CDN with the .mjs extension.
- * This is more reliable than cdnjs for specific version matching.
- */
+
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
-export default function BookDetailsPdf({ fileUrl }: { fileUrl: string }) {
+export default function BookDetailsPdf({ file_url }: { file_url: string }) {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [containerWidth, setContainerWidth] = useState<number>(0);
@@ -43,7 +40,7 @@ export default function BookDetailsPdf({ fileUrl }: { fileUrl: string }) {
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
-    setPageNumber(1); // Reset to page 1 if fileUrl changes
+    setPageNumber(1); // Reset to page 1 if file_url changes
   }
 
   return (
@@ -81,7 +78,7 @@ export default function BookDetailsPdf({ fileUrl }: { fileUrl: string }) {
         </button>
 
         <a 
-          href={fileUrl} 
+          href={file_url} 
           download 
           target="_blank" 
           rel="noreferrer" 
@@ -99,7 +96,7 @@ export default function BookDetailsPdf({ fileUrl }: { fileUrl: string }) {
       >
         <div ref={pdfContainerRef} className="w-full max-w-4xl p-4 overflow-y-auto flex justify-center">
           <Document 
-            file={fileUrl} 
+            file={file_url} 
             onLoadSuccess={onDocumentLoadSuccess}
             loading={
               <div className="flex flex-col items-center my-20">

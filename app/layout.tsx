@@ -21,7 +21,7 @@
 //     <html lang="en">
 //       <body className={`${inter.className} min-h-screen flex flex-col`}>
 //         {/* This wrapper handles the logic of which nav to show */}
-        
+
 //         <StoreProvider>
 //         <NavbarWrapper />
 //         <main className="flex-grow">
@@ -34,13 +34,12 @@
 //   );
 // }
 
-
-import { Inter,Odor_Mean_Chey, Moul, Kantumruy_Pro } from "next/font/google";
+import { Inter, Odor_Mean_Chey, Moul, Kantumruy_Pro } from "next/font/google";
 import "./globals.css";
 import NavbarWrapper from "@/components/layout/NavbarWrapper";
 import Footer from "@/components/layout/Footer";
 import StoreProvider from "@/store/StoreProvider";
-import I18nProvider from "@/components/I18nProvider"; 
+import I18nProvider from "@/components/I18nProvider";
 import { Metadata } from "next";
 import { Toaster } from "sonner";
 
@@ -50,39 +49,31 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://cousify.vercel.app"),
 
   title: {
-    default: "Coursify | Learn Skills Online",
+    default: "Coursify | Learn Programming & Tech Skills Online",
     template: "%s | Coursify",
   },
 
   description:
-    "Coursify is an online learning platform to explore courses in programming, design, and technology. Learn anytime, anywhere.",
+    "Coursify is a modern e-learning platform to learn programming, web development, and IT skills in Cambodia. Start learning today.",
 
   keywords: [
-    "online courses",
-    "e-learning platform",
+    "Coursify",
+    "online courses Cambodia",
     "learn programming",
-    "web development Cambodia",
-    "IT courses",
-    "Coursify"
+    "web development course",
+    "IT training Cambodia",
+    "e-learning platform",
   ],
 
   authors: [{ name: "Coursify Team" }],
-  creator: "Coursify",
 
   openGraph: {
-    title: "Coursify | Learn Skills Online",
+    title: "Coursify | Learn Anytime, Anywhere",
     description:
-      "Join Coursify to learn programming, design, and tech skills from anywhere.",
-    url: "https://cousify.vercel.app",
+      "Explore top courses in programming, design, and technology with Coursify.",
+    url: "/",
     siteName: "Coursify",
-    images: [
-      {
-        url: "/thumbnail.jpg", // put inside public folder
-        width: 1200,
-        height: 630,
-        alt: "Coursify Learning Platform",
-      },
-    ],
+    images: ["/thumbnail.jpg"], // cleaner (metadataBase handles full URL)
     locale: "en_US",
     type: "website",
   },
@@ -97,6 +88,14 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
+
+  // ✅ EXTRA (improves SEO)
+  robots: {
+    index: true,
+    follow: true,
+  },
+
+  category: "education",
 };
 
 const odorMeanChey = Odor_Mean_Chey({
@@ -106,15 +105,15 @@ const odorMeanChey = Odor_Mean_Chey({
   display: "swap",
 });
 
-const moul = Moul({ 
-  weight: '400', 
-  subsets: ['khmer'], 
-  variable: '--font-moul' 
+const moul = Moul({
+  weight: "400",
+  subsets: ["khmer"],
+  variable: "--font-moul",
 });
 
-const kantumruy = Kantumruy_Pro({ 
-  subsets: ['khmer'], 
-  variable: '--font-kantumruy' 
+const kantumruy = Kantumruy_Pro({
+  subsets: ["khmer"],
+  variable: "--font-kantumruy",
 });
 
 export default function RootLayout({
@@ -124,14 +123,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} ${odorMeanChey.variable} ${moul.variable} ${kantumruy.variable} font-sans min-h-screen flex flex-col`}>
+      <body
+        className={`${inter.className} ${odorMeanChey.variable} ${moul.variable} ${kantumruy.variable} font-sans min-h-screen flex flex-col`}
+      >
         <StoreProvider>
           {/* ✅ Wrap everything in the I18nProvider */}
-          <I18nProvider> 
+          <I18nProvider>
             <NavbarWrapper />
-            <main className="flex-grow">
-              {children}
-            </main>
+            <main className="flex-grow">{children}</main>
             <Footer />
             <Toaster position="top-right" />
           </I18nProvider>

@@ -1,4 +1,3 @@
-
 // // import CourseDetail from "@/components/course/CourseDetail";
 // "use client";
 // import FAQSection from "@/components/landing/FAQSection";
@@ -8,7 +7,6 @@
 // import PopularCourse from "@/components/landing/PopularCourse";
 // import StudentFeedback from "@/components/landing/StudentFeedBack";
 // import TrendingBooks from "@/components/landing/TrendingBooks";
-
 
 // export default function Home() {
 //   return (
@@ -28,45 +26,23 @@
 //   );
 // }
 
-
 import type { Metadata } from "next";
 import HomeClient from "./HomeClient";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://cousify.vercel.app"),
+
   title: "Coursify | Learn Programming & Tech Skills Online",
   description:
-    "Coursify is the best e-learning platform to learn programming, web development, and IT skills in Cambodia. Start your journey today.",
-
-  keywords: [
-    "Coursify",
-    "online courses Cambodia",
-    "learn programming",
-    "web development course",
-    "IT training Cambodia",
-    "e-learning platform"
-  ],
-
+    "Coursify is the best e-learning platform to learn programming and IT skills in Cambodia.",
   openGraph: {
-    title: "Coursify | Learn Anytime, Anywhere",
-    description:
-      "Join Coursify to explore top courses in programming, design, and technology.",
-    url: "https://cousify.vercel.app",
-    siteName: "Coursify",
-    images: [
-      {
-        url: "/thumbnail.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Coursify Platform",
-      },
-    ],
-    type: "website",
+    title: "Coursify",
+    description: "Learn from industry experts",
+    images: ["/thumbnail.jpg"], // cleaner
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Coursify",
-    description: "Learn programming and tech skills online",
     images: ["/thumbnail.jpg"],
   },
 };

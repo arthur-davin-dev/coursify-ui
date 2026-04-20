@@ -16,7 +16,7 @@ import CourseCard from "@/components/course/CourseCard";
 import BannerCourse from "@/components/course/BannerCourse";
 import PopularCourse from "@/components/landing/PopularCourse";
 
-const COURSES_PER_PAGE = 12;
+const COURSES_PER_PAGE = 8;
 
 export default function CoursePage() {
   const [search, setSearch] = useState("");

@@ -40,15 +40,15 @@ export default function StudentFeedback() {
     },
     {
       mainStatement: t("Feedback2"),
-      name: "Bean SovannRanuth",
+      name: "Thai Ratanak",
       title: t("Web Developer"),
-      profile: "/student/davin1.jpg",
+      profile: "/student/Thai Ratanak.jpg",
     },
     {
       mainStatement: t("Feedback3"),
-      name: "Arthur Davin",
+      name: "Khanh Kanhchhana",
       title: t("UX/UI Designer"),
-      profile: "/student/davin2.jpg",
+      profile: "/student/Khanh Kanhchhana.jpg",
     },
   ];
 

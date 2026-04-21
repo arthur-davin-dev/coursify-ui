@@ -598,26 +598,37 @@ const CustomDropdown = ({
         />
       </button>
       {isOpen && (
-        <div
-          className="absolute z-20 w-full mt-2 rounded-xl shadow-lg max-h-60 overflow-y-auto"
-          style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
-        >
-          {options.map((opt) => (
-            <div
-              key={opt.value}
-              onClick={() => { onChange(opt.value); setIsOpen(false); }}
-              className={`px-4 py-2.5 text-sm cursor-pointer transition-colors ${
-                value === opt.value
-                  ? "bg-indigo-50 text-indigo-600 font-semibold"
-                  : "hover:bg-indigo-50/20"
-              }`}
-              style={value === opt.value ? {} : { color: "var(--text-muted)" }}
-            >
-              {opt.label}
-            </div>
-          ))}
-        </div>
-      )}
+  <div
+    className="absolute left-0 right-0 z-[999] mt-2 rounded-xl shadow-2xl overflow-hidden border border-[var(--border)]"
+    style={{ 
+      backgroundColor: "var(--bg-card)", // MUST be a solid color
+      isolation: "isolate" // Creates a new stacking context
+    }}
+  >
+    <div className="flex flex-col max-h-60 overflow-y-auto">
+      {options.map((opt) => {
+        const isSelected = value === opt.value;
+        return (
+          <div
+            key={opt.value}
+            onClick={() => {
+              onChange(opt.value);
+              setIsOpen(false);
+            }}
+            // Force a solid background on every single item
+            className={`px-4 py-3 text-sm cursor-pointer transition-colors border-b border-[var(--border)] last:border-b-0 ${
+              isSelected
+                ? "bg-indigo-600/10 text-indigo-500 font-semibold"
+                : "bg-[var(--bg-card)] hover:bg-gray-500/10 text-[var(--text)]"
+            }`}
+          >
+            {opt.label}
+          </div>
+        );
+      })}
+    </div>
+  </div>
+)}
     </div>
   );
 };
@@ -1019,7 +1030,7 @@ export default function CreateBookForm({
               <FormField label="Category *">
                 {catLoading ? (
                   <div className={`${inputCls} flex items-center gap-2`} style={inputStyle}>
-                    <Loader2 size={14} className="animate-spin text-indigo-400" />
+                    <Loader2 size={14} className="animate-spin text-indigo-500" />
                     <span style={{ color: "var(--text-muted)" }}>Loading categories…</span>
                   </div>
                 ) : (

@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     "e-learning platform",
   ],
 
-  authors: [{ name: "Coursify Team" }],
+  authors: [{ name: "Coursify | Master Programming in Cambodia" }],
 
   openGraph: {
     title: "Coursify | Learn Anytime, Anywhere",
@@ -37,15 +37,22 @@ export const metadata: Metadata = {
       "Explore top courses in programming, design, and technology with Coursify.",
     url: "/",
     siteName: "Coursify",
-    images: ["/thumbnail.jpg"], // cleaner (metadataBase handles full URL)
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/thumbnail.jpg", // Make sure this is in your /public folder
+        width: 1200,
+        height: 630,
+        alt: "Coursify - Cambodia's Premier IT Learning Platform",
+      },
+    ]
   },
 
   twitter: {
     card: "summary_large_image",
     title: "Coursify",
-    description: "Learn programming and tech skills online",
+    description: "Level up your career with modern programming and IT courses. Learn in Khmer and English, build real projects, and join Cambodia's tech revolution.",
     images: ["/thumbnail.jpg"],
   },
 

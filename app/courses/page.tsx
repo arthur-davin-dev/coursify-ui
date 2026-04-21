@@ -289,7 +289,21 @@ function Pagination({
 
   const handleChange = (page: number) => {
     onPageChange(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Find the element with the ID 'all-courses'
+    const element = document.getElementById("all-courses");
+
+    if (element) {
+      // Calculate the element's position and scroll there with an offset
+      const yOffset = -100; // Adjust this value to account for your fixed navbar height
+      const y =
+        element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+      window.scrollTo({ top: y, behavior: "smooth" });
+    } else {
+      // Fallback if element isn't found
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   return (

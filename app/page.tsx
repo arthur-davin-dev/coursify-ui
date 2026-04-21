@@ -36,8 +36,8 @@ export const metadata: Metadata = {
   description:
     "Coursify is the best e-learning platform to learn programming and IT skills in Cambodia.",
   openGraph: {
-    title: "Coursify",
-    description: "Learn from industry experts",
+    title: "Coursify is the best e-learning platform to learn programming and IT skills in Cambodia.",
+    description: "Coursify is a modern e-learning platform to learn programming, web development, and IT skills in Cambodia. Start learning today.",
     images: ["/thumbnail.jpg"], // cleaner
   },
 

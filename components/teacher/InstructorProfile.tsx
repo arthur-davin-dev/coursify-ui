@@ -518,7 +518,7 @@ export default function InstructorProfile() {
           </p>
         </Field>
 
-        <div className="mt-3">
+        {/* <div className="mt-3">
           <Field label="Expertise tags">
             <div
               className="flex flex-wrap gap-2 px-3 py-2 min-h-[42px] rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-gray-950 cursor-text focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-400 transition-all"
@@ -552,7 +552,7 @@ export default function InstructorProfile() {
             </div>
             <p className="text-[11px] text-neutral-400 mt-1">Press Enter or comma to add</p>
           </Field>
-        </div>
+        </div> */}
       </SectionCard>
 
       {/* ── save status ── */}

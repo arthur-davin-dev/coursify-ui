@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  useGetBooksQuery,
+  useGetMyBooksQuery,
   useDeleteBookMutation,
 } from "@/store/services/bookApi";
 import type { Book } from "@/store/services/bookApi";
@@ -75,7 +75,7 @@ export default function AllBooksTable() {
   const router = useRouter();
   const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
 
-  const { data, isLoading, isError } = useGetBooksQuery();
+  const { data, isLoading, isError } = useGetMyBooksQuery();
   const [deleteBook, { isLoading: isDeleting }] = useDeleteBookMutation();
 
   const books: Book[] = Array.isArray(data)

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  useGetBooksQuery,
+  useGetMyBooksQuery,
   useDeleteBookMutation,
 } from "@/store/services/bookApi";
 import type { Book } from "@/store/services/bookApi";
@@ -75,7 +75,7 @@ export default function AllBooksTable() {
   const router = useRouter();
   const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
 
-  const { data, isLoading, isError } = useGetBooksQuery();
+  const { data, isLoading, isError } = useGetMyBooksQuery();
   const [deleteBook, { isLoading: isDeleting }] = useDeleteBookMutation();
 
   const books: Book[] = Array.isArray(data)
@@ -112,7 +112,7 @@ export default function AllBooksTable() {
             </h1>
           </div>
           <button
-            onClick={() => router.push("/library/create-book")}
+            onClick={() => router.push("/dashboard/teacher/create-book")}
             className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-500/90 text-white text-sm font-bold font-inter transition-all hover:-translate-y-0.5 shadow-lg shadow-amber-500/20"
           >
             <Plus size={18} /> Add Book
@@ -283,9 +283,9 @@ export default function AllBooksTable() {
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-end gap-2">
                           {/* View PDF */}
-                          {book.file_url && (
+                          {book.fileUrl && (
                             <a
-                              href={book.file_url}
+                              href={book.fileUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="p-2 rounded-lg hover:bg-amber-500/10 text-amber-500 transition-colors"

@@ -10,12 +10,13 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  Check,
 } from "lucide-react";
 import CourseCard from "@/components/course/CourseCard";
 import BannerCourse from "@/components/course/BannerCourse";
 import PopularCourse from "@/components/landing/PopularCourse";
 
-const COURSES_PER_PAGE = 12;
+const COURSES_PER_PAGE = 8;
 
 export default function CoursePage() {
   const [search, setSearch] = useState("");
@@ -160,7 +161,7 @@ export default function CoursePage() {
                       key={cat.id}
                       label={cat.name}
                       active={selectedCategoryId === cat.id}
-                      onClick={() => handleSelectCategory(cat.id)}
+                      onClick={() => handleSelectCategory(Number(cat.id))}
                     />
                   ))}
                 </motion.div>
@@ -181,7 +182,7 @@ export default function CoursePage() {
               key={cat.id}
               label={cat.name}
               active={selectedCategoryId === cat.id}
-              onClick={() => handleSelectCategory(cat.id)}
+              onClick={() => handleSelectCategory(Number(cat.id))}
             />
           ))}
         </div>
@@ -288,7 +289,21 @@ function Pagination({
 
   const handleChange = (page: number) => {
     onPageChange(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Find the element with the ID 'all-courses'
+    const element = document.getElementById("all-courses");
+
+    if (element) {
+      // Calculate the element's position and scroll there with an offset
+      const yOffset = -100; // Adjust this value to account for your fixed navbar height
+      const y =
+        element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+      window.scrollTo({ top: y, behavior: "smooth" });
+    } else {
+      // Fallback if element isn't found
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   return (

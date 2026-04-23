@@ -35,7 +35,7 @@
 
 //   if (bookError || !book) return <p className="text-center mt-10 text-red-500 font-bold">Book not found.</p>;
 
-//   const proxiedFileUrl = book.fileUrl?.replace("http://localhost:8080/api", "/backend-api");
+//   const proxiedfile_url = book.file_url?.replace("http://localhost:8080/api", "/backend-api");
 
 //   return (
 //     <div className="bg-gray-100 dark:bg-darkbg min-h-screen py-8">
@@ -80,7 +80,7 @@
 //             </div>
 
 //             <div className="mt-12">
-//               <BookDetailsPdf fileUrl={proxiedFileUrl} />
+//               <BookDetailsPdf file_url={proxiedfile_url} />
 //             </div>
 //           </div>
 
@@ -181,7 +181,8 @@ export default function BookDetails() {
             </div>
 
             <div className="mt-12 pt-8 border-t dark:border-gray-700">
-              <BookDetailsPdf fileUrl={book.fileUrl?.replace("http://localhost:8080/api", "/api")} />
+              {/* <BookDetailsPdf file_url={book.file_url?.replace("http://localhost:8080/api", "/api")} /> */}
+              <BookDetailsPdf file_url={book.fileUrl} />
             </div>
           </main>
 

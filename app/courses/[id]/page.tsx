@@ -1,17 +1,16 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useGetCourseByIdQuery } from "@/store/services/courseApi";
 import CourseDetail from "@/components/course/CourseDetail";
-// Swap this import for whatever auth hook your project uses
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
-
+import { ArrowLeft } from "lucide-react";
 
 export default function CourseDetailPage() {
-const { id } = useParams();
+  const { id } = useParams();
+  const router = useRouter();
   const { data: course, isLoading, isError } = useGetCourseByIdQuery(Number(id));
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-
 
   if (isLoading) {
     return (
@@ -52,5 +51,18 @@ const { id } = useParams();
     );
   }
 
-  return <CourseDetail course={course} isAuthenticated={isAuthenticated} />;
+  return (
+    <div className="max-w-7xl mx-auto px-6 py-6">
+      {/* Back Button */}
+      <button
+        onClick={() => router.back()}
+        className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition mb-6 group"
+      >
+        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+        Back
+      </button>
+
+      <CourseDetail course={course} isAuthenticated={isAuthenticated} />
+    </div>
+  );
 }

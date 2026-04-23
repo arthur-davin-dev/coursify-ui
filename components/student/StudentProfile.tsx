@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect, ChangeEvent } from "react";
 import { baseApi } from "@/store/services/baseApi";
 import { useGetUserInfoQuery, UserInfo } from "@/store/features/users/userSlice";
+// ─── NEW: Import Enrollment API ──────────────────────────────────────────────
+import { useGetMyEnrolledCoursesQuery } from "@/store/services/enrollmentApi";
 
 // ─── constants ────────────────────────────────────────────────────────────────
 const CLOUDINARY_CLOUD = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!;
@@ -136,6 +138,8 @@ export default function StudentProfile() {
   // ── queries & mutations ──────────────────────────────────────────────────
   const { data: user, isLoading, isError } = useGetUserInfoQuery();
   const [updateProfile, { isLoading: isSaving }] = useUpdateProfileMutation();
+  // ── NEW: Fetch Enrollment Data ───────────────────────────────────────────
+  const { data: enrolled, isLoading: isLoadingEnrolled } = useGetMyEnrolledCoursesQuery();
 
   // ── upload loading states ─────────────────────────────────────────────────
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
@@ -169,6 +173,10 @@ export default function StudentProfile() {
   const fullName = `${form.firstName} ${form.lastName}`.trim() || "Instructor";
   const avatarSrc = avatarPreview ?? user?.imageUrl ?? null;
   const bgSrc = bgPreview ?? user?.bgImageUrl ?? null;
+
+  // ── NEW: Calculate Total Enrollment ──────────────────────────────────────
+  const enrolledList = Array.isArray(enrolled) ? enrolled : (enrolled as any)?.content ?? [];
+  const totalEnrollments = enrolledList.length;
 
   // ── helpers ──────────────────────────────────────────────────────────────
   const set = <K extends keyof ProfileForm>(key: K, value: ProfileForm[K]) =>
@@ -311,7 +319,7 @@ export default function StudentProfile() {
           type="button"
           onClick={() => bgRef.current?.click()}
           disabled={isUploadingBg}
-          className="absolute bottom-2.5 right-2.5 flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-black/40 hover:bg-black/60 text-white backdrop-blur-sm transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/50 z-20"
+          className="corsur-pointer absolute bottom-2.5 right-2.5 flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-black/40 hover:bg-black/60 text-white backdrop-blur-sm transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/50 z-20"
           aria-label="Change background photo"
         >
           <ImageIcon />
@@ -374,7 +382,8 @@ export default function StudentProfile() {
       {/* ── stats row ── */}
       <div className="grid grid-cols-3 gap-3 mb-5">
         {[
-          { val: "12", lbl: "Courses" },
+          // ── CHANGED: Dynamic Enrollment Count ──
+          { val: isLoadingEnrolled ? "..." : totalEnrollments.toString(), lbl: "Total Enrollment" },
           { val: "1.4k", lbl: "Students" },
           { val: "4.8", lbl: "Rating" },
         ].map(({ val, lbl }) => (
@@ -470,42 +479,6 @@ export default function StudentProfile() {
             {bio.length} / {BIO_MAX}
           </p>
         </Field>
-
-        <div className="mt-3">
-          <Field label="Expertise tags">
-            <div
-              className="flex flex-wrap gap-2 px-3 py-2 min-h-[42px] rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-gray-950 cursor-text focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-400 transition-all"
-              onClick={() => document.getElementById("tagInput")?.focus()}
-            >
-              {tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-xs font-medium px-2.5 py-1 rounded-full"
-                >
-                  {tag}
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); removeTag(tag); }}
-                    className="text-blue-400 hover:text-blue-700 dark:hover:text-blue-200 leading-none focus:outline-none"
-                    aria-label={`Remove ${tag}`}
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
-              <input
-                id="tagInput"
-                className="flex-1 min-w-[80px] bg-transparent text-sm text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 outline-none"
-                placeholder="Add tag…"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyDown={handleTagKey}
-                onBlur={addTag}
-              />
-            </div>
-            <p className="text-[11px] text-neutral-400 mt-1">Press Enter or comma to add</p>
-          </Field>
-        </div>
       </SectionCard>
 
       {/* ── save status ── */}

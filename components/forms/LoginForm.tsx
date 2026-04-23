@@ -559,7 +559,7 @@ function RolePickerModal({
 
         {/* Role Cards */}
         <div className="px-8 pb-6 space-y-3">
-          {(["student", "TEACHER"] as Role[]).map((role) => (
+          {(["STUDENT", "TEACHER"] as Role[]).map((role) => (
             <button
               key={role}
               type="button"
@@ -607,8 +607,8 @@ function RolePickerModal({
                 <p
                   className={`font-bold text-sm capitalize ${selectedRole === role ? "text-blue-700 dark:text-blue-300" : "text-slate-700 dark:text-white"}`}
                 >
-                  {role}
-                </p>
+                  {role.charAt(0) + role.slice(1).toLowerCase()} {/* → "Student" / "Teacher" */}
+</p>
                 <p className="text-xs text-slate-400 dark:text-gray-500 mt-0.5">
                   {role === "STUDENT"
                     ? "Access courses & learning materials"

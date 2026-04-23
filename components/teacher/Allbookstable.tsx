@@ -112,7 +112,7 @@ export default function AllBooksTable() {
             </h1>
           </div>
           <button
-            onClick={() => router.push("/library/create-book")}
+            onClick={() => router.push("/dashboard/teacher/create-book")}
             className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-500/90 text-white text-sm font-bold font-inter transition-all hover:-translate-y-0.5 shadow-lg shadow-amber-500/20"
           >
             <Plus size={18} /> Add Book

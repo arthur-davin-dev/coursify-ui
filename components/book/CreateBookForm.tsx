@@ -11,6 +11,16 @@ import {
   CheckCircle2, ChevronRight, Loader2, ArrowRight, Circle, FileText, X,
 } from "lucide-react";
 import { useGetCategoriesQuery } from "@/store/services/categoryApi";
+import z from "zod";
+
+// ── Validation Schema ────────────────────────────────────────────────────────
+const bookSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  categoryId: z.union([z.number(), z.string()]).refine(val => val !== "", "Please select a category"),
+});
+
+type BookFormValues = z.infer<typeof bookSchema>;
 
 const MAX_THUMBNAIL_MB = 5;
 const MAX_THUMB_BYTES  = MAX_THUMBNAIL_MB * 1024 * 1024;

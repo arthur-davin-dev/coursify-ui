@@ -297,7 +297,7 @@ export default function AllBooksTable() {
                           {/* View detail */}
                           <button
                             onClick={() =>
-                              router.push(`/dashboard/teacher/books/${book.id}`)
+                              router.push(`/library/${book.id}`)
                             }
                             className="p-2 rounded-lg hover:bg-primary/10 text-primary transition-colors"
                             title="View"

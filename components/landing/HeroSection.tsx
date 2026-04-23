@@ -5,6 +5,7 @@ import { Lightbulb, Target, Rocket, Video, Star } from 'lucide-react';
 import { Kantumruy_Pro, Plus_Jakarta_Sans, Moul } from "next/font/google";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
+import Link from 'next/link';
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -88,12 +89,29 @@ const HeroSection = () => {
 
             <motion.div variants={itemVariants} className="mt-10 flex flex-wrap justify-center gap-4 lg:justify-start">
               {/* Added Moul for buttons if preferred, or keep Kantumruy for readability */}
-              <button className={`${isKhmer ? "font-bold" : "font-bold"} rounded-xl bg-blue-600 px-8 py-4 text-white shadow-lg shadow-blue-500/30 transition-all hover:scale-105 hover:bg-blue-700`}>
+              {/* <button className={`${isKhmer ? "font-bold" : "font-bold"} rounded-xl bg-blue-600 px-8 py-4 text-white shadow-lg shadow-blue-500/30 transition-all hover:scale-105 hover:bg-blue-700`}>
                 {t("Browse Courses")}
               </button>
               <button className="rounded-xl border border-slate-200 bg-white px-8 py-4 font-bold text-slate-700 transition-all hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
                 {t("View Free Demo")}
-              </button>
+              </button> */}
+              <div className="flex flex-wrap gap-4">
+  {/* Primary Button: Navigates to /courses */}
+  <Link 
+    href="/courses"
+    className={`${isKhmer ? "font-bold" : "font-bold"} rounded-xl bg-blue-600 px-8 py-4 text-white shadow-lg shadow-blue-500/30 transition-all hover:scale-105 hover:bg-blue-700 inline-block text-center`}
+  >
+    {t("Browse Courses")}
+  </Link>
+
+  {/* Secondary Button: Navigates to /demo */}
+  <Link 
+    href="/library"
+    className="rounded-xl border border-slate-200 bg-white px-8 py-4 font-bold text-slate-700 transition-all hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 inline-block text-center"
+  >
+    {t("Browse Library")}
+  </Link>
+</div>
             </motion.div>
 
             <motion.div variants={itemVariants} className="mt-12 flex flex-wrap justify-center gap-6 lg:justify-start">

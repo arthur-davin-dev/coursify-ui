@@ -4,6 +4,7 @@ import { useGetCoursesQuery } from "@/store/services/courseApi";
 import CourseCard from "@/components/course/CourseCard";
 import { Loader2 } from "lucide-react";
 import { motion } from "framer-motion"; // 1. Import motion
+import Link from 'next/link';
 
 // Animation variants for the grid container
 const containerVariants = {
@@ -59,9 +60,12 @@ export default function PopularCourse() {
               className="mt-2 h-1.5 rounded-full bg-blue-600" 
             />
           </div>
-          <button className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors">
-            See All Courses
-          </button>
+          <Link
+      href="/courses" 
+      className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors"
+    >
+      See All Courses
+    </Link>
         </motion.div>
 
         {/* Loading State */}

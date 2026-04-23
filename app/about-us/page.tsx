@@ -66,7 +66,7 @@ const AboutUs = () => {
     },
     {
       name: "Kit Tara",
-      role: t("Project Advisor"),
+      role: t("Mentor"),
       image: "/mentor/Kit Tara.jpg",
       links: {
         fb: "https://www.facebook.com/share/1CRKbQHyYg/?mibextid=wwXIfr",
@@ -517,7 +517,7 @@ const AboutUs = () => {
             {t("Join Community")}
           </p>
           <motion.a
-            href="https://t.me/@istadkh" // Replace with your link
+            href="https://t.me/istadkh" // Replace with your link
             target="_blank"
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}

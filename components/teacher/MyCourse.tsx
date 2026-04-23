@@ -151,7 +151,7 @@ export default function MyCourse() {
           {courses.map((course) => (
             <Link
               key={course.id}
-              href={`/teacher/courses/${course.id}`}
+              href={`/courses/${course.id}`}
               className="flex items-center justify-between py-3 px-2 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-xl transition-colors"
             >
               <div className="flex items-center gap-3">

@@ -47,7 +47,7 @@ export default function MyBook() {
           <BookMarked size={32} className="text-gray-300 dark:text-slate-600" />
           <p className="text-sm text-gray-400 dark:text-gray-500">No books yet.</p>
           <Link
-            href="/library/create"
+            href="/dashboard/teacher/create-book"
             className="text-xs text-indigo-500 hover:underline font-medium mt-1"
           >
             Add your first book →
@@ -61,7 +61,7 @@ export default function MyBook() {
           {books.map((book) => (
             <Link
               key={book.id}
-              href={`/teacher/books/${book.id}`}
+              href={`/library/${book.id}`}
               className="flex items-center gap-4 py-4 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-xl transition-colors px-2"
             >
               {/* Cover */}

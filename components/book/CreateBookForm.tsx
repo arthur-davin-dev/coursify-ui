@@ -88,38 +88,32 @@ const CustomDropdown = ({
           className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
+
       {isOpen && (
-  <div
-    className="absolute left-0 right-0 z-[999] mt-2 rounded-xl shadow-2xl overflow-hidden border border-[var(--border)]"
-    style={{ 
-      backgroundColor: "var(--bg-card)", // MUST be a solid color
-      isolation: "isolate" // Creates a new stacking context
-    }}
-  >
-    <div className="flex flex-col max-h-60 overflow-y-auto">
-      {options.map((opt) => {
-        const isSelected = value === opt.value;
-        return (
-          <div
-            key={opt.value}
-            onClick={() => {
-              onChange(opt.value);
-              setIsOpen(false);
-            }}
-            // Force a solid background on every single item
-            className={`px-4 py-3 text-sm cursor-pointer transition-colors border-b border-[var(--border)] last:border-b-0 ${
-              isSelected
-                ? "bg-indigo-600/10 text-indigo-500 font-semibold"
-                : "bg-[var(--bg-card)] hover:bg-gray-500/10 text-[var(--text)]"
-            }`}
-          >
-            {opt.label}
+        <div
+          className="absolute left-0 right-0 z-[999] mt-2 rounded-xl shadow-2xl overflow-hidden border border-[var(--border)]"
+          style={{ isolation: "isolate" }}
+        >
+          <div className="flex flex-col max-h-60 overflow-y-auto">
+            {options.map((opt) => (
+              <div
+                key={opt.value}
+                onClick={() => {
+                  onChange(opt.value);
+                  setIsOpen(false);
+                }}
+                className={`px-4 py-3 text-sm cursor-pointer transition-colors border-b border-[var(--border)] last:border-b-0 ${
+                  value === opt.value
+                    ? "bg-indigo-600/10 text-indigo-500 font-semibold"
+                    : "bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white"
+                }`}
+              >
+                {opt.label}
+              </div>
+            ))}
           </div>
-        );
-      })}
-    </div>
-  </div>
-)}
+        </div>
+      )}
     </div>
   );
 };
